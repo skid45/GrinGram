@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "893325410430",
+    "project_id": "gringram-383d9",
+    "storage_bucket": "gringram-383d9.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:893325410430:android:0fcb53d37a7ccc3385982f",
+        "android_client_info": {
+          "package_name": "com.skid.gringram"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "893325410430-5varfotbm9acbuh7l26v6ntj40t2vj36.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBpFL2VeeV3Qlp0lHX9tpiC3A9XvYNVYuk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "893325410430-5varfotbm9acbuh7l26v6ntj40t2vj36.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
