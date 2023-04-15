@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/bottom_navigation"
+    app:startDestination="@id/chatListFragment">
+
+    <fragment
+        android:id="@+id/contactListFragment"
+        android:name="com.skid.gringram.ui.ContactListFragment"
+        android:label="contact_list"
+        tools:layout="@layout/contact_list" />
+
+    <fragment
+        android:id="@+id/chatListFragment"
+        android:name="com.skid.gringram.ui.ChatListFragment"
+        android:label="chat_list"
+        tools:layout="@layout/chat_list" />
+
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.skid.gringram.ui.SettingsFragment"
+        android:label="settings"
+        tools:layout="@layout/settings" />
+
+
+</navigation>

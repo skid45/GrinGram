@@ -3,35 +3,65 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main_navigation"
-    app:startDestination="@id/signInFragment">
+    app:startDestination="@id/mainAppFragment">
 
     <fragment
         android:id="@+id/signInFragment"
         android:name="com.skid.gringram.ui.SignInFragment"
         android:label="sign_in"
-        tools:layout="@layout/sign_in" >
+        tools:layout="@layout/sign_in">
         <action
             android:id="@+id/action_signInFragment_to_signUpFragment"
-            app:destination="@id/signUpFragment" />
+            app:destination="@id/signUpFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
         <action
-            android:id="@+id/action_signInFragment_to_chatListFragment"
-            app:destination="@id/chatListFragment" />
+            android:id="@+id/action_signInFragment_to_mainAppFragment"
+            app:destination="@id/mainAppFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"
+            app:popUpTo="@id/main_navigation"
+            app:popUpToInclusive="true" />
     </fragment>
     <fragment
         android:id="@+id/signUpFragment"
         android:name="com.skid.gringram.ui.SignUpFragment"
         android:label="sign_up"
-        tools:layout="@layout/sign_up" >
+        tools:layout="@layout/sign_up">
         <action
             android:id="@+id/action_signUpFragment_to_signInFragment"
-            app:destination="@id/signInFragment" />
+            app:destination="@id/signInFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
         <action
-            android:id="@+id/action_signUpFragment_to_chatListFragment"
-            app:destination="@id/chatListFragment" />
+            android:id="@+id/action_signUpFragment_to_mainAppFragment"
+            app:destination="@id/mainAppFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"
+            app:popUpTo="@id/main_navigation"
+            app:popUpToInclusive="true" />
     </fragment>
     <fragment
-        android:id="@+id/chatListFragment"
-        android:name="com.skid.gringram.ui.ChatListFragment"
-        android:label="chat_list"
-        tools:layout="@layout/chat_list" />
+        android:id="@+id/mainAppFragment"
+        android:name="com.skid.gringram.ui.MainAppFragment"
+        android:label="fragment_main_app"
+        tools:layout="@layout/fragment_main_app">
+        <action
+            android:id="@+id/action_mainAppFragment_to_signInFragment"
+            app:destination="@id/signInFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"
+            app:popUpTo="@id/main_navigation"
+            app:popUpToInclusive="true" />
+    </fragment>
 </navigation>

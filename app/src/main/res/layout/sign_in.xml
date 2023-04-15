@@ -49,6 +49,19 @@
         app:layout_constraintTop_toBottomOf="@+id/edittext_email"
         android:autofillHints="password" />
 
+    <TextView
+        android:id="@+id/text_incorrect_input"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/email_or_password_is_incorrect"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="5dp"
+        android:textColor="@android:color/holo_red_dark"
+        android:visibility="gone"
+        tools:visibility="visible"
+        app:layout_constraintTop_toBottomOf="@id/edittext_password"
+        app:layout_constraintStart_toStartOf="@id/edittext_password"/>
+
     <com.google.android.material.button.MaterialButton
         android:id="@+id/button_sign_in"
         android:layout_width="0dp"
@@ -60,7 +73,7 @@
         app:cornerRadius="15dp"
         app:layout_constraintEnd_toEndOf="@id/edittext_password"
         app:layout_constraintStart_toStartOf="@id/edittext_password"
-        app:layout_constraintTop_toBottomOf="@id/edittext_password" />
+        app:layout_constraintTop_toBottomOf="@id/text_incorrect_input" />
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/text_sign_in_to_sign_up"
