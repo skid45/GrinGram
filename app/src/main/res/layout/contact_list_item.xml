@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/contact_item_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?android:attr/selectableItemBackground"
+    android:clickable="true"
+    android:focusable="true"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:padding="8dp">
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/contact_image"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:background="@drawable/circle_imageview"
+        android:src="@drawable/baseline_person_24"
+        app:civ_border_width="0.5dp" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/contact_username"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="15dp"
+        android:layout_weight="1"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Body1.Bold"
+        tools:text="Username" />
+
+    <ImageButton
+        android:id="@+id/add_contact_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="10dp"
+        android:background="@android:color/transparent"
+        android:contentDescription="@string/add_contact"
+        android:src="@drawable/baseline_person_add_24"
+        android:visibility="gone" />
+
+    <ImageButton
+        android:id="@+id/remove_contact_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="10dp"
+        android:background="@android:color/transparent"
+        android:contentDescription="@string/add_contact"
+        android:src="@drawable/baseline_person_remove_24"
+        android:visibility="gone" />
+
+</LinearLayout>

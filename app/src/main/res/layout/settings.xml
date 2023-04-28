@@ -1,17 +1,70 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
     tools:context=".ui.SettingsFragment">
 
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/user_image"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/circle_imageview"
+        android:src="@drawable/baseline_person_24"
+        app:civ_border_width="1dp" />
 
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/signout_button"
+    <TextView
+        android:id="@+id/username_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="@string/sign_out"/>
+        android:layout_marginTop="5dp"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5.Bold"
+        tools:text="Username" />
 
-</FrameLayout>
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="40dp"
+        android:layout_marginTop="40dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/change_photo"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:background="?android:attr/selectableItemBackground"
+                android:drawablePadding="15dp"
+                android:gravity="center_vertical"
+                android:paddingHorizontal="10dp"
+                android:text="@string/change_photo"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
+                app:drawableStartCompat="@drawable/baseline_add_a_photo_24" />
+
+            <com.google.android.material.divider.MaterialDivider
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="50dp" />
+
+            <TextView
+                android:id="@+id/sign_out"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:background="?android:attr/selectableItemBackground"
+                android:drawablePadding="15dp"
+                android:gravity="center_vertical"
+                android:paddingHorizontal="10dp"
+                android:text="@string/sign_out"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
+                app:drawableStartCompat="@drawable/baseline_logout_24" />
+
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+</LinearLayout>

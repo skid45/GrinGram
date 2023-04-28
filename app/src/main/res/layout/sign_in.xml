@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/darker_gray"
+
     tools:context=".ui.SignInFragment">
 
     <TextView
@@ -14,9 +14,7 @@
         android:layout_marginStart="50dp"
         android:layout_marginTop="100dp"
         android:text="@string/sign_in"
-        android:textColor="@android:color/holo_blue_dark"
-        android:textSize="30sp"
-        android:textStyle="bold"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Headline4.PrimaryColor"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -26,51 +24,48 @@
         android:layout_height="50dp"
         android:layout_marginHorizontal="32dp"
         android:layout_marginTop="20dp"
-        android:background="@drawable/rounded_edittext"
+        android:autofillHints="emailAddress"
         android:hint="@string/e_mail"
-        android:paddingHorizontal="20dp"
         android:inputType="textEmailAddress"
+        android:paddingHorizontal="20dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/text_sign_in"
-        android:autofillHints="emailAddress" />
+        tools:text="123" />
 
     <EditText
         android:id="@+id/edittext_password"
         android:layout_width="0dp"
         android:layout_height="50dp"
         android:layout_marginTop="20dp"
-        android:background="@drawable/rounded_edittext"
+        android:autofillHints="password"
         android:hint="@string/password"
-        android:paddingHorizontal="20dp"
         android:inputType="textPassword"
+        android:paddingHorizontal="20dp"
         app:layout_constraintEnd_toEndOf="@id/edittext_email"
         app:layout_constraintStart_toStartOf="@id/edittext_email"
-        app:layout_constraintTop_toBottomOf="@+id/edittext_email"
-        android:autofillHints="password" />
+        app:layout_constraintTop_toBottomOf="@+id/edittext_email" />
 
     <TextView
         android:id="@+id/text_incorrect_input"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/email_or_password_is_incorrect"
         android:layout_marginStart="20dp"
         android:layout_marginTop="5dp"
+        android:text="@string/email_or_password_is_incorrect"
         android:textColor="@android:color/holo_red_dark"
         android:visibility="gone"
-        tools:visibility="visible"
+        app:layout_constraintStart_toStartOf="@id/edittext_password"
         app:layout_constraintTop_toBottomOf="@id/edittext_password"
-        app:layout_constraintStart_toStartOf="@id/edittext_password"/>
+        tools:visibility="visible" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/button_sign_in"
         android:layout_width="0dp"
         android:layout_height="55dp"
         android:layout_marginTop="20dp"
-        android:backgroundTint="@android:color/holo_blue_dark"
         android:text="@string/sign_in"
         android:textSize="16sp"
-        app:cornerRadius="15dp"
         app:layout_constraintEnd_toEndOf="@id/edittext_password"
         app:layout_constraintStart_toStartOf="@id/edittext_password"
         app:layout_constraintTop_toBottomOf="@id/text_incorrect_input" />
@@ -81,8 +76,9 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:text="@string/don_t_have_account_sign_up_here"
-        app:layout_constraintTop_toBottomOf="@+id/button_sign_in"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+        app:layout_constraintEnd_toEndOf="@id/button_sign_in"
         app:layout_constraintStart_toStartOf="@id/button_sign_in"
-        app:layout_constraintEnd_toEndOf="@id/button_sign_in"/>
+        app:layout_constraintTop_toBottomOf="@+id/button_sign_in" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

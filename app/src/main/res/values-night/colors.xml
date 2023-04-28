@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="hint_color">#797979</color>
+    <color name="edit_text_color">#464746</color>
+
+    <color name="colorPrimary">#37B9F4</color>
+    <color name="colorSecondary">#3BEDDE</color>
+    <color name="colorOnPrimary">#FFFFFF</color>
+    <color name="colorOnSecondaryContainer">#60C4F6</color>
+    <color name="colorSurface">#1E3340</color>
+    <color name="colorOnSurfaceVariant">#747679</color>
+    <color name="colorOnSurface">#C3C0C0</color>
+    <color name="colorBackground">#000000</color>
+
+</resources>

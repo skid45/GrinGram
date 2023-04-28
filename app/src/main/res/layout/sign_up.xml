@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/darker_gray"
     tools:context=".ui.SignUpFragment">
 
     <TextView
@@ -14,9 +13,7 @@
         android:layout_marginStart="50dp"
         android:layout_marginTop="100dp"
         android:text="@string/sign_up"
-        android:textColor="@android:color/holo_blue_dark"
-        android:textSize="30sp"
-        android:textStyle="bold"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Headline4.PrimaryColor"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -27,7 +24,6 @@
         android:layout_marginHorizontal="32dp"
         android:layout_marginTop="20dp"
         android:autofillHints="emailAddress"
-        android:background="@drawable/rounded_edittext"
         android:hint="@string/username"
         android:inputType="text"
         android:maxLines="1"
@@ -42,7 +38,6 @@
         android:layout_height="50dp"
         android:layout_marginTop="20dp"
         android:autofillHints="emailAddress"
-        android:background="@drawable/rounded_edittext"
         android:hint="@string/e_mail"
         android:inputType="textEmailAddress"
         android:paddingHorizontal="20dp"
@@ -56,7 +51,6 @@
         android:layout_height="50dp"
         android:layout_marginTop="20dp"
         android:autofillHints="password"
-        android:background="@drawable/rounded_edittext"
         android:hint="@string/password"
         android:inputType="textPassword"
         android:paddingHorizontal="20dp"
@@ -69,7 +63,6 @@
         android:layout_width="0dp"
         android:layout_height="55dp"
         android:layout_marginTop="20dp"
-        android:backgroundTint="@android:color/holo_blue_dark"
         android:text="@string/sign_up"
         android:textSize="16sp"
         app:cornerRadius="15dp"
@@ -83,6 +76,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:text="@string/already_have_an_account_sign_in_here"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
         app:layout_constraintEnd_toEndOf="@id/button_sign_up"
         app:layout_constraintStart_toStartOf="@id/button_sign_up"
         app:layout_constraintTop_toBottomOf="@+id/button_sign_up" />

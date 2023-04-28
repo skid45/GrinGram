@@ -1,46 +1,60 @@
 package com.skid.gringram.ui
 
-import android.util.Log
-import androidx.annotation.IdRes
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.NavController
+import androidx.lifecycle.viewModelScope
+import com.skid.gringram.ui.repositories.AuthRepository
+import com.skid.gringram.ui.repositories.UserRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 
-class AuthViewModel(private val firebaseAuthRepository: FirebaseAuthRepository) : ViewModel() {
+class AuthViewModel(
+    private val userRepository: UserRepository,
+    private val authRepository: AuthRepository,
+) : ViewModel() {
 
-    private val _signInState = MutableStateFlow(false)
+    private val _signInState: MutableStateFlow<Boolean?> = MutableStateFlow(null)
     val signInState = _signInState.asStateFlow()
-    private val _signUpState = MutableStateFlow(false)
+    private val _signUpState: MutableStateFlow<Boolean?> = MutableStateFlow(null)
     val signUpState = _signUpState.asStateFlow()
 
 
-    fun checkUserSignIn(navController: NavController, @IdRes resIdRes: Int) {
-        firebaseAuthRepository.checkUserSignIn(navController, resIdRes)
+    fun signUp(username: String, email: String, password: String) {
+        authRepository.signUp(username, email, password, _signUpState)
+        viewModelScope.launch {
+            signUpState.collect {
+                if (it == true) userRepository.addCurrentUserValueEventListener()
+            }
+        }
     }
 
-    suspend fun signUp(email: String, password: String) {
-        firebaseAuthRepository.signUp(email, password, _signUpState)
-        Log.d("Auth", signUpState.value.toString())
-    }
-
-    suspend fun signIn(email: String, password: String) {
-        firebaseAuthRepository.signIn(email, password, _signInState)
+    fun signIn(email: String, password: String) {
+        authRepository.signIn(email, password, _signInState)
+        viewModelScope.launch {
+            signInState.collect {
+                if (it == true) userRepository.addCurrentUserValueEventListener()
+            }
+        }
     }
 
     fun signOut() {
-        firebaseAuthRepository.signOut()
-        _signInState.value = false
-        _signUpState.value = false
+        userRepository.removeCurrentUserValueEventListener()
+        authRepository.signOut()
+        _signInState.value = null
+        _signUpState.value = null
     }
+
 }
 
 @Suppress("UNCHECKED_CAST")
 class AuthViewModelFactory(private val application: GringramApp) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(AuthViewModel::class.java)) {
-            return AuthViewModel(application.firebaseAuthRepository) as T
+            return AuthViewModel(
+                application.userRepository,
+                application.authRepository
+            ) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="SplashTheme" parent="Theme.AppCompat.NoActionBar">
+        <item name="android:windowBackground">@drawable/splash_screen</item>
+    </style>
+
+    <style name="EditTextStyle" parent="Widget.AppCompat.EditText">
+        <item name="android:background">@drawable/rounded_edittext</item>
+        <item name="android:textColorHint">@color/hint_color</item>
+        <item name="android:textAppearance">@style/TextAppearance.MaterialComponents.Body1</item>
+    </style>
+
+    <style name="ButtonStyle" parent="Widget.MaterialComponents.Button">
+        <item name="cornerRadius">15dp</item>
+        <item name="android:textColor">@color/colorBackground</item>
+    </style>
+
+    <style name="MaterialCardStyle" parent="Widget.MaterialComponents.CardView">
+        <item name="android:backgroundTint">@color/colorSurface</item>
+        <item name="android:elevation">5dp</item>
+        <item name="cardCornerRadius">10dp</item>
+    </style>
+
+    <style name="MaterialDividerStyle" parent="Widget.MaterialComponents.MaterialDivider">
+        <item name="dividerColor">@color/colorOnSurfaceVariant</item>
+    </style>
+
+    <style name="TextAppearance.MaterialComponents.Headline4.PrimaryColor">
+        <item name="android:textColor">@color/colorPrimary</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="TextAppearance.MaterialComponents.Headline5.Bold">
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="TextAppearance.MaterialComponents.Body1.Bold">
+        <item name="android:textStyle">bold</item>
+    </style>
+
+</resources>

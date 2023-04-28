@@ -6,9 +6,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
-import com.google.firebase.auth.FirebaseAuthException
 import com.skid.gringram.R
 import com.skid.gringram.databinding.SignInBinding
 import kotlinx.coroutines.launch
@@ -17,7 +18,9 @@ class SignInFragment : Fragment() {
     private var _binding: SignInBinding? = null
     private val binding get() = _binding!!
     private val navController by lazy { findNavController() }
-    private val authViewModel: AuthViewModel by activityViewModels()
+    private val authViewModel: AuthViewModel by activityViewModels {
+        AuthViewModelFactory(activity?.application as GringramApp)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -48,17 +51,20 @@ class SignInFragment : Fragment() {
                     if (password.isBlank()) edittextPassword.error = "Field cannot be empty"
                     return@setOnClickListener
                 }
+                authViewModel.signIn(email, password)
                 lifecycleScope.launch {
-                    try {
-                        authViewModel.signIn(email, password)
-                    } catch (_: FirebaseAuthException) {
-                        textIncorrectInput.visibility = View.VISIBLE
-                    }
-                    if (authViewModel.signInState.value) {
-                        navController.navigate(R.id.action_signInFragment_to_mainAppFragment)
+                    viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                        authViewModel.signInState.collect {
+                            if (it == true) {
+                                if (navController.currentDestination!!.id == R.id.signInFragment) {
+                                    navController.navigate(R.id.action_signInFragment_to_chatListFragment)
+                                }
+                            } else if (it == false) {
+                                textIncorrectInput.visibility = View.VISIBLE
+                            }
+                        }
                     }
                 }
-
             }
 
             textSignInToSignUp.setOnClickListener {
@@ -66,5 +72,4 @@ class SignInFragment : Fragment() {
             }
         }
     }
-
 }

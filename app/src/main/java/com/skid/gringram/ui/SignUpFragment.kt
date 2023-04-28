@@ -7,9 +7,10 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
-import com.google.firebase.auth.FirebaseAuthException
 import com.skid.gringram.R
 import com.skid.gringram.databinding.SignUpBinding
 import kotlinx.coroutines.launch
@@ -18,7 +19,9 @@ class SignUpFragment : Fragment() {
     private var _binding: SignUpBinding? = null
     private val binding get() = _binding!!
     private val navController by lazy { findNavController() }
-    private val authViewModel: AuthViewModel by activityViewModels()
+    private val authViewModel: AuthViewModel by activityViewModels {
+        AuthViewModelFactory(activity?.application as GringramApp)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -50,17 +53,19 @@ class SignUpFragment : Fragment() {
                     if (password.isBlank()) edittextPassword.error = "Field cannot be empty"
                     return@setOnClickListener
                 }
-
-                lifecycleScope.launch {
-                    try {
-                        authViewModel.signUp(email, password)
-                    } catch (e: FirebaseAuthException) {
-                        Toast.makeText(context, e.message, Toast.LENGTH_SHORT).show()
+                authViewModel.signUp(username, email, password)
+                viewLifecycleOwner.lifecycleScope.launch {
+                    viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                        authViewModel.signUpState.collect {
+                            if (it == true) {
+                                if (navController.currentDestination!!.id == R.id.signUpFragment) {
+                                    navController.navigate(R.id.action_signUpFragment_to_chatListFragment)
+                                }
+                            } else if (it == false) {
+                                Toast.makeText(context, "Sign up error", Toast.LENGTH_SHORT).show()
+                            }
+                        }
                     }
-                    if (authViewModel.signUpState.value) {
-                        navController.navigate(R.id.action_signUpFragment_to_mainAppFragment)
-                    }
-
                 }
             }
 
