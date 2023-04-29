@@ -14,7 +14,6 @@ class ContactListAdapter :
     RecyclerView.Adapter<ContactListAdapter.ViewHolder>() {
     var dataset: List<User> = emptyList()
         set(newDataset) {
-
             val diffUtilCallback = UserDiffUtilCallback(field, newDataset)
             val diffResult = DiffUtil.calculateDiff(diffUtilCallback)
             field = newDataset
@@ -33,13 +32,12 @@ class ContactListAdapter :
                 Picasso.get().load(it).fit().centerCrop().into(contactImage)
             }
             if (currentUser != null) {
-                if (currentUser.contactList.contains(contactItem)) {
+                if (currentUser.listOfContactsUri.contains(contactItem.uid)) {
                     removeContactButton.visibility = View.VISIBLE
                     addContactButton.visibility = View.GONE
                 } else {
                     addContactButton.visibility = View.VISIBLE
                     removeContactButton.visibility = View.GONE
-
                 }
             }
         }

@@ -4,5 +4,5 @@ data class User(
     val uid: String? = null,
     val username: String? = null,
     val photoUri: String? = null,
-    val contactList: MutableList<User> = mutableListOf(),
+    val listOfContactsUri: MutableMap<String, String> = mutableMapOf(),
 )

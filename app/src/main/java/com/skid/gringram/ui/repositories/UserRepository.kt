@@ -19,17 +19,37 @@ class UserRepository {
     private val storage = FirebaseStorage.getInstance().reference
 
     val currentUserState: MutableStateFlow<User?> = MutableStateFlow(null)
+    val currentUserContactList: MutableStateFlow<List<User>> =
+        MutableStateFlow(emptyList())
     val contactsByQuery: MutableStateFlow<List<User>> = MutableStateFlow(emptyList())
 
 
     private val currentUserValueEventListener = object : ValueEventListener {
         override fun onDataChange(snapshot: DataSnapshot) {
-            currentUserState.value = snapshot.getValue(User::class.java)!!
+            val currentUser = snapshot.getValue(User::class.java)!!
+            if (currentUser.listOfContactsUri.isNotEmpty()) {
+                loadContactList(currentUser.listOfContactsUri)
+            }
+            currentUserState.value = currentUser
         }
 
         override fun onCancelled(error: DatabaseError) {
             Log.w("Database", "loadUser:onCancelled", error.toException())
         }
+    }
+
+    private val contactListValueEventListener = object : ValueEventListener {
+        override fun onDataChange(snapshot: DataSnapshot) {
+            for (item in snapshot.children) {
+                val contact = item.getValue(User::class.java)!!
+                currentUserContactList.value = currentUserContactList.value + contact
+            }
+        }
+
+        override fun onCancelled(error: DatabaseError) {
+            Log.w("Database", "loadContactsByQuery:onCancelled", error.toException())
+        }
+
     }
 
     private val contactsByQueryValueEventListener = object : ValueEventListener {
@@ -47,7 +67,6 @@ class UserRepository {
         override fun onCancelled(error: DatabaseError) {
             Log.w("Database", "loadContactsByQuery:onCancelled", error.toException())
         }
-
     }
 
     fun addCurrentUserValueEventListener() {
@@ -63,6 +82,13 @@ class UserRepository {
     fun sendQueryToReceiveContacts(queryString: String) {
         val query = database.getReference("users").orderByChild("username").startAt(queryString)
         query.addListenerForSingleValueEvent(contactsByQueryValueEventListener)
+    }
+
+    fun loadContactList(listOfContactsUri: MutableMap<String, String>) {
+        listOfContactsUri.forEach {
+            val query = database.getReference("users").orderByKey().equalTo(it.value)
+            query.addValueEventListener(contactListValueEventListener)
+        }
     }
 
     fun changeUserPhoto(uri: Uri) {

@@ -39,7 +39,7 @@ class ContactListFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         recyclerViewInit()
-
+        userStateCollect()
         userContactsCollect()
 
 
@@ -72,14 +72,22 @@ class ContactListFragment : Fragment() {
         contactListRecyclerView.adapter = contactListAdapter
     }
 
-    private fun userContactsCollect() {
+
+    private fun userStateCollect() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 userViewModel.currentUserState.collect {
-                    if (it != null) {
-                        contactListAdapter.dataset = it.contactList
-                        contactListAdapter.currentUser = it
-                    }
+                    contactListAdapter.currentUser = it
+                }
+            }
+        }
+    }
+
+    private fun userContactsCollect() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                userViewModel.currentUserContactList.collect {
+                    contactListAdapter.dataset = it
                 }
             }
         }
