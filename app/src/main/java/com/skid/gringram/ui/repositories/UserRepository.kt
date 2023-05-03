@@ -19,17 +19,16 @@ class UserRepository {
     private val storage = FirebaseStorage.getInstance().reference
 
     val currentUserState: MutableStateFlow<User?> = MutableStateFlow(null)
-    val currentUserContactList: MutableStateFlow<List<User>> =
-        MutableStateFlow(emptyList())
+    val currentUserContactList: MutableStateFlow<Set<User>> =
+        MutableStateFlow(emptySet())
     val contactsByQuery: MutableStateFlow<List<User>> = MutableStateFlow(emptyList())
 
 
     private val currentUserValueEventListener = object : ValueEventListener {
         override fun onDataChange(snapshot: DataSnapshot) {
             val currentUser = snapshot.getValue(User::class.java)!!
-            if (currentUser.listOfContactsUri.isNotEmpty()) {
-                loadContactList(currentUser.listOfContactsUri)
-            }
+            currentUserContactList.value = emptySet()
+            loadContactList(currentUser.listOfContactsUri)
             currentUserState.value = currentUser
         }
 
@@ -47,7 +46,7 @@ class UserRepository {
         }
 
         override fun onCancelled(error: DatabaseError) {
-            Log.w("Database", "loadContactsByQuery:onCancelled", error.toException())
+            Log.w("Database", "loadContacts:onCancelled", error.toException())
         }
 
     }
@@ -77,6 +76,9 @@ class UserRepository {
     fun removeCurrentUserValueEventListener() {
         database.getReference("users").child(auth.uid.toString())
             .removeEventListener(currentUserValueEventListener)
+        currentUserState.value = null
+        currentUserContactList.value = emptySet()
+        contactsByQuery.value = emptyList()
     }
 
     fun sendQueryToReceiveContacts(queryString: String) {
@@ -109,19 +111,21 @@ class UserRepository {
         }
     }
 
-//    fun addContact(user: User) {
-//        val currentUser = currentUserState.value
-//        currentUser?.contactList?.add(user)
-//        database.reference.child("users").child(currentUser?.uid.toString())
-//            .setValue(currentUser)
-//    }
-//
-//    fun removeContact(uid: String) {
-//        val currentUser = currentUserState.value
-//        currentUser?.contactList?.removeIf { it.uid == uid }
-//        database.reference.child("users").child(currentUser?.uid.toString())
-//            .setValue(currentUser)
-//    }
+    fun addContact(uid: String) {
+        val currentUser = currentUserState.value
+        if (currentUser != null) {
+            currentUser.listOfContactsUri[uid] = uid
+        }
+        database.reference.child("users").child(currentUser?.uid.toString())
+            .setValue(currentUser)
+    }
+
+    fun removeContact(uid: String) {
+        val currentUser = currentUserState.value
+        currentUser?.listOfContactsUri?.remove(uid)
+        database.reference.child("users").child(currentUser?.uid.toString())
+            .setValue(currentUser)
+    }
 
 
 }

@@ -14,7 +14,7 @@ class UserViewModel(
 ) : ViewModel() {
 
     val currentUserState: StateFlow<User?> = userRepository.currentUserState.asStateFlow()
-    val currentUserContactList: StateFlow<List<User>> =
+    val currentUserContactList: StateFlow<Set<User>> =
         userRepository.currentUserContactList.asStateFlow()
     val contactsByQuery: StateFlow<List<User>> = userRepository.contactsByQuery.asStateFlow()
 
@@ -30,6 +30,13 @@ class UserViewModel(
         userRepository.sendQueryToReceiveContacts(queryString)
     }
 
+    fun addContact(uid: String) {
+        userRepository.addContact(uid)
+    }
+
+    fun removeContact(uid: String) {
+        userRepository.removeContact(uid)
+    }
 
     override fun onCleared() {
         super.onCleared()

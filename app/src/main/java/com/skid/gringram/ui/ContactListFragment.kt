@@ -13,6 +13,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.skid.gringram.databinding.ContactListBinding
+import com.skid.gringram.ui.adapter.ContactListActionListener
 import com.skid.gringram.ui.adapter.ContactListAdapter
 import kotlinx.coroutines.launch
 
@@ -25,7 +26,12 @@ class ContactListFragment : Fragment() {
         UserViewModelFactory(activity?.application as GringramApp)
     }
 
-    private val contactListAdapter by lazy { ContactListAdapter() }
+    private val contactListAdapter by lazy {
+        ContactListAdapter(object : ContactListActionListener {
+            override fun addContact(uid: String) = userViewModel.addContact(uid)
+            override fun removeContact(uid: String) = userViewModel.removeContact(uid)
+        })
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -87,7 +93,7 @@ class ContactListFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 userViewModel.currentUserContactList.collect {
-                    contactListAdapter.dataset = it
+                    contactListAdapter.dataset = it.toList()
                 }
             }
         }
