@@ -45,7 +45,7 @@ class SettingsFragment : Fragment() {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 userViewModel.currentUserState.collect {
                     if (it != null) {
-                        binding.usernameText.text = it.username
+                        binding.settingsCollapsingTollbar.title = it.username
                         if (it.photoUri != null) {
                             Picasso.get().load(it.photoUri).fit().centerCrop()
                                 .into(binding.userImage)
