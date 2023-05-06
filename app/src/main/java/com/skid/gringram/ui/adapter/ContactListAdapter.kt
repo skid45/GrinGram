@@ -32,6 +32,7 @@ class ContactListAdapter(
         fun bind(contactItem: User, currentUser: User?) = with(binding) {
             addContactButton.tag = contactItem
             removeContactButton.tag = contactItem
+            contactItemLayout.tag = contactItem
 
             contactUsername.text = contactItem.username
             contactItem.photoUri.let {
@@ -55,6 +56,7 @@ class ContactListAdapter(
 
         binding.addContactButton.setOnClickListener(this)
         binding.removeContactButton.setOnClickListener(this)
+        binding.contactItemLayout.setOnClickListener(this)
 
         return ViewHolder(binding)
     }
@@ -70,12 +72,15 @@ class ContactListAdapter(
         when (p0.id) {
             R.id.add_contact_button -> user.uid?.let { actionListener.addContact(it) }
             R.id.remove_contact_button -> user.uid?.let { actionListener.removeContact(it) }
+            R.id.contact_item_layout -> user.uid?.let { actionListener.onChatWithSelectedUser(it) }
         }
     }
 }
 
 
 interface ContactListActionListener {
+    fun onChatWithSelectedUser(uid: String)
+
     fun addContact(uid: String)
 
     fun removeContact(uid: String)

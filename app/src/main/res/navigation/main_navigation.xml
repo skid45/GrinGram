@@ -63,6 +63,13 @@
             app:popExitAnim="@anim/slide_out_right"
             app:popUpTo="@id/main_navigation"
             app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_chatListFragment_to_chatFragment"
+            app:destination="@id/chatFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
     <fragment
         android:id="@+id/settingsFragment"
@@ -83,6 +90,34 @@
         android:id="@+id/contactListFragment"
         android:name="com.skid.gringram.ui.ContactListFragment"
         android:label="contact_list"
-        tools:layout="@layout/contact_list" />
+        tools:layout="@layout/contact_list">
+        <action
+            android:id="@+id/action_contactListFragment_to_chatFragment"
+            app:destination="@id/chatFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+    </fragment>
+    <fragment
+        android:id="@+id/chatFragment"
+        android:name="com.skid.gringram.ui.ChatFragment"
+        android:label="chat"
+        tools:layout="@layout/chat">
+        <action
+            android:id="@+id/action_chatFragment_to_contactListFragment"
+            app:destination="@id/contactListFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+        <action
+            android:id="@+id/action_chatFragment_to_chatListFragment"
+            app:destination="@id/chatListFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+    </fragment>
 
 </navigation>

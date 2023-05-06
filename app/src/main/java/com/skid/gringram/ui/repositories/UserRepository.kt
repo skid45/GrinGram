@@ -22,6 +22,7 @@ class UserRepository {
     val currentUserContactList: MutableStateFlow<Set<User>> =
         MutableStateFlow(emptySet())
     val contactsByQuery: MutableStateFlow<List<User>> = MutableStateFlow(emptyList())
+    val userForChat: MutableStateFlow<User> = MutableStateFlow(User())
 
 
     private val currentUserValueEventListener = object : ValueEventListener {
@@ -90,6 +91,14 @@ class UserRepository {
         listOfContactsUri.forEach {
             val query = database.getReference("users").orderByKey().equalTo(it.value)
             query.addValueEventListener(contactListValueEventListener)
+        }
+    }
+
+    fun getUserForChat(uid: String) {
+        database.getReference("users").orderByKey().equalTo(uid).get().addOnCompleteListener {
+            if (it.isSuccessful) userForChat.value =
+                it.result.children.first().getValue(User::class.java)!!
+            else Log.d("CHAT", "getUserForChat: ${it.exception}")
         }
     }
 

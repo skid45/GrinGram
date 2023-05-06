@@ -19,4 +19,7 @@
     <string name="icon">icon</string>
     <string name="search">Search</string>
     <string name="add_contact">Add contact</string>
+    <string name="user_details">User details</string>
+    <string name="message">Message</string>
+    <string name="send">Send</string>
 </resources>

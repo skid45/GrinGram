@@ -16,10 +16,23 @@
         <item name="android:textColor">@color/colorBackground</item>
     </style>
 
+    <style name="ButtonStyle.SendMessageButton">
+        <item name="cornerRadius">20dp</item>
+    </style>
+
+    <style name="SendMessageButton" parent="Widget.AppCompat.ImageButton">
+        <item name="android:background">@drawable/circle_image_button</item>
+    </style>
+
     <style name="MaterialCardStyle" parent="Widget.MaterialComponents.CardView">
         <item name="android:backgroundTint">@color/colorSurface</item>
         <item name="android:elevation">5dp</item>
         <item name="cardCornerRadius">10dp</item>
+    </style>
+
+    <style name="Message" parent="Widget.MaterialComponents.CardView">
+        <item name="android:backgroundTint">@color/colorSurface</item>
+        <item name="cardCornerRadius">20dp</item>
     </style>
 
     <style name="MaterialDividerStyle" parent="Widget.MaterialComponents.MaterialDivider">

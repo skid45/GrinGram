@@ -17,6 +17,7 @@ class UserViewModel(
     val currentUserContactList: StateFlow<Set<User>> =
         userRepository.currentUserContactList.asStateFlow()
     val contactsByQuery: StateFlow<List<User>> = userRepository.contactsByQuery.asStateFlow()
+    val userForChat: StateFlow<User> = userRepository.userForChat.asStateFlow()
 
     init {
         userRepository.addCurrentUserValueEventListener()
@@ -36,6 +37,10 @@ class UserViewModel(
 
     fun removeContact(uid: String) {
         userRepository.removeContact(uid)
+    }
+
+    fun getUserForChat(uid: String) {
+        userRepository.getUserForChat(uid)
     }
 
     override fun onCleared() {

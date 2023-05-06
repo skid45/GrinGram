@@ -11,7 +11,9 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.skid.gringram.R
 import com.skid.gringram.databinding.ContactListBinding
 import com.skid.gringram.ui.adapter.ContactListActionListener
 import com.skid.gringram.ui.adapter.ContactListAdapter
@@ -28,6 +30,11 @@ class ContactListFragment : Fragment() {
 
     private val contactListAdapter by lazy {
         ContactListAdapter(object : ContactListActionListener {
+            override fun onChatWithSelectedUser(uid: String) {
+                userViewModel.getUserForChat(uid)
+                findNavController().navigate(R.id.action_contactListFragment_to_chatFragment)
+            }
+
             override fun addContact(uid: String) = userViewModel.addContact(uid)
             override fun removeContact(uid: String) = userViewModel.removeContact(uid)
         })
