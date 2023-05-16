@@ -3,6 +3,7 @@ package com.skid.gringram.ui
 import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.skid.gringram.ui.model.Dialog
 import com.skid.gringram.ui.model.User
 import com.skid.gringram.ui.repositories.UserRepository
 import kotlinx.coroutines.flow.StateFlow
@@ -16,8 +17,9 @@ class UserViewModel(
     val currentUserState: StateFlow<User?> = userRepository.currentUserState.asStateFlow()
     val currentUserContactList: StateFlow<Set<User>> =
         userRepository.currentUserContactList.asStateFlow()
+    val currentUserDialogs: StateFlow<List<Dialog>> =
+        userRepository.currentUserDialogs.asStateFlow()
     val contactsByQuery: StateFlow<List<User>> = userRepository.contactsByQuery.asStateFlow()
-    val userForChat: StateFlow<User> = userRepository.userForChat.asStateFlow()
 
     init {
         userRepository.addCurrentUserValueEventListener()
@@ -39,8 +41,8 @@ class UserViewModel(
         userRepository.removeContact(uid)
     }
 
-    fun getUserForChat(uid: String) {
-        userRepository.getUserForChat(uid)
+    fun sendMessage(text: String, recipientUserUid: String) {
+        userRepository.sendMessage(text, recipientUserUid)
     }
 
     override fun onCleared() {

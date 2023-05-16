@@ -1,19 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    style="@style/Message"
-    android:layout_width="wrap_content"
+    android:id="@+id/core_message_layout"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginEnd="50dp"
+    android:gravity="end"
+    android:paddingStart="50dp"
+    android:paddingEnd="0dp">
 
-    app:cardUseCompatPadding="true"
-    app:contentPadding="10dp">
-
-    <TextView
+    <com.google.android.material.card.MaterialCardView
+        style="@style/Message"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
-        tools:text="message" />
+        app:cardUseCompatPadding="true">
 
-</com.google.android.material.card.MaterialCardView>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="10dp">
+
+            <TextView
+                android:id="@+id/message_text"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
+                tools:text="message 253 515 12 35 1235 1235 21 35 1235 2135 125 1 23535 1235 215" />
+
+            <TextView
+                android:id="@+id/timestamp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:layout_marginStart="5dp"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Caption"
+                tools:text="12:23" />
+
+        </LinearLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+</LinearLayout>

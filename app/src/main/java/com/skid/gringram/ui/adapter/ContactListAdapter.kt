@@ -14,8 +14,8 @@ import com.squareup.picasso.Picasso
 class ContactListAdapter(
     private val actionListener: ContactListActionListener,
 ) :
-    RecyclerView.Adapter<ContactListAdapter.ViewHolder>(), OnClickListener {
-    var dataset: List<User> = emptyList()
+    MainAdapter<User, ContactListAdapter.ViewHolder>(), OnClickListener {
+    override var dataset: List<User> = emptyList()
         set(newDataset) {
             val diffUtilCallback = UserDiffUtilCallback(field, newDataset)
             val diffResult = DiffUtil.calculateDiff(diffUtilCallback)
@@ -23,7 +23,7 @@ class ContactListAdapter(
             diffResult.dispatchUpdatesTo(this)
         }
 
-    var currentUser: User? = null
+    override var currentUser: User? = null
 
 
     class ViewHolder(private val binding: ContactListItemBinding) :
@@ -61,25 +61,19 @@ class ContactListAdapter(
         return ViewHolder(binding)
     }
 
-    override fun getItemCount(): Int = dataset.size
-
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(dataset[position], currentUser)
-    }
-
     override fun onClick(p0: View) {
         val user = p0.tag as User
         when (p0.id) {
             R.id.add_contact_button -> user.uid?.let { actionListener.addContact(it) }
             R.id.remove_contact_button -> user.uid?.let { actionListener.removeContact(it) }
-            R.id.contact_item_layout -> user.uid?.let { actionListener.onChatWithSelectedUser(it) }
+            R.id.contact_item_layout -> actionListener.onChatWithSelectedUser(user)
         }
     }
 }
 
 
 interface ContactListActionListener {
-    fun onChatWithSelectedUser(uid: String)
+    fun onChatWithSelectedUser(companionUser: User)
 
     fun addContact(uid: String)
 

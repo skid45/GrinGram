@@ -6,6 +6,7 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
@@ -17,6 +18,8 @@ import com.skid.gringram.R
 import com.skid.gringram.databinding.ContactListBinding
 import com.skid.gringram.ui.adapter.ContactListActionListener
 import com.skid.gringram.ui.adapter.ContactListAdapter
+import com.skid.gringram.ui.model.User
+import com.skid.gringram.utils.userStateCollect
 import kotlinx.coroutines.launch
 
 
@@ -30,9 +33,11 @@ class ContactListFragment : Fragment() {
 
     private val contactListAdapter by lazy {
         ContactListAdapter(object : ContactListActionListener {
-            override fun onChatWithSelectedUser(uid: String) {
-                userViewModel.getUserForChat(uid)
-                findNavController().navigate(R.id.action_contactListFragment_to_chatFragment)
+            override fun onChatWithSelectedUser(companionUser: User) {
+                val bundle = bundleOf("companionUser" to companionUser)
+                findNavController().navigate(
+                    R.id.action_contactListFragment_to_chatFragment, bundle
+                )
             }
 
             override fun addContact(uid: String) = userViewModel.addContact(uid)
@@ -52,7 +57,7 @@ class ContactListFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         recyclerViewInit()
-        userStateCollect()
+        userStateCollect(userViewModel.currentUserState, contactListAdapter)
         userContactsCollect()
 
 
@@ -86,15 +91,15 @@ class ContactListFragment : Fragment() {
     }
 
 
-    private fun userStateCollect() {
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                userViewModel.currentUserState.collect {
-                    contactListAdapter.currentUser = it
-                }
-            }
-        }
-    }
+//    private fun userStateCollect() {
+//        viewLifecycleOwner.lifecycleScope.launch {
+//            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+//                userViewModel.currentUserState.collect {
+//                    contactListAdapter.currentUser = it
+//                }
+//            }
+//        }
+//    }
 
     private fun userContactsCollect() {
         viewLifecycleOwner.lifecycleScope.launch {
