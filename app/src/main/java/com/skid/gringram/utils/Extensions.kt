@@ -11,10 +11,10 @@ import com.skid.gringram.ui.adapter.MainAdapter
 import com.skid.gringram.ui.model.User
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import kotlinx.datetime.Instant
+import kotlinx.datetime.*
 import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toLocalDateTime
 import java.io.Serializable
+import java.util.*
 
 fun Long?.getTimeFromEpochMilliseconds(
     timeZone: TimeZone = TimeZone.currentSystemDefault(),
@@ -26,6 +26,40 @@ fun Long?.getTimeFromEpochMilliseconds(
     }"
 }
 
+fun Long?.getTimeOrDayOfWeekFromEpochMilliseconds(
+    timeZone: TimeZone = TimeZone.currentSystemDefault(),
+): String {
+    if (this == null) return ""
+    val localDateTime = Instant.fromEpochMilliseconds(this).toLocalDateTime(timeZone)
+    val currentDateTime = Clock.System.now().toLocalDateTime(timeZone)
+
+    return when {
+        localDateTime.date == currentDateTime.date -> {
+            "${localDateTime.hour.toString().padStart(2, '0')}:${
+                localDateTime.minute.toString().padStart(2, '0')
+            }"
+        }
+        localDateTime.date.daysUntil(currentDateTime.date) < 7 -> {
+            localDateTime.dayOfWeek.getDayOfWeekShortName()
+        }
+        else -> "${localDateTime.dayOfMonth}.${
+            localDateTime.monthNumber.toString().padStart(2, '0')
+        }"
+    }
+}
+
+fun DayOfWeek.getDayOfWeekShortName(): String {
+    return when (this.name) {
+        "MONDAY" -> "Mon"
+        "TUESDAY" -> "Tues"
+        "WEDNESDAY" -> "Wed"
+        "THURSDAY" -> "Thurs"
+        "FRIDAY" -> "Fri"
+        "SATURDAY" -> "Sat"
+        "SUNDAY" -> "Sun"
+        else -> ""
+    }
+}
 
 fun <T : Any, VH : RecyclerView.ViewHolder> Fragment.userStateCollect(
     currentUserState: StateFlow<User?>,
