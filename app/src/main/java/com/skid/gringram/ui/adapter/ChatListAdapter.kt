@@ -35,15 +35,23 @@ class ChatListAdapter(
             Picasso.get().load(chatListItem.companionUser?.photoUri).fit().centerCrop()
                 .into(imageChatListItem)
             textNameChatListItem.text = chatListItem.companionUser?.username ?: ""
-            textMessageChatListItem.text = chatListItem.dialog?.messages?.values?.last()?.text ?: ""
-            timeChatListItem.text =
-                chatListItem
-                    .dialog
-                    ?.messages
-                    ?.values
-                    ?.last()
-                    ?.timestamp
+
+            val lastMessage = chatListItem.dialog?.messages?.values?.last()
+            if (lastMessage != null) {
+                textMessageChatListItem.text = lastMessage.text
+                timeChatListItem.text = lastMessage
+                    .timestamp
                     .getTimeFromEpochMilliseconds(TimeZone.currentSystemDefault())
+                if (lastMessage.from == chatListItem.companionUser?.uid) {
+                    if (lastMessage.viewed == false) {
+                        viewedCheckmarkChatListItem.setImageResource(R.drawable.checkmark_icon)
+                    } else {
+                        viewedCheckmarkChatListItem.setImageResource(R.drawable.checkmark_done_icon)
+                    }
+                    viewedCheckmarkChatListItem.visibility = View.VISIBLE
+                } else viewedCheckmarkChatListItem.visibility = View.GONE
+            }
+
             val countOfNewMessages =
                 chatListItem
                     .dialog

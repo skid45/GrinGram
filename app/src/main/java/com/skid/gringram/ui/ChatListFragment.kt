@@ -1,7 +1,6 @@
 package com.skid.gringram.ui
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -58,7 +57,6 @@ class ChatListFragment : Fragment() {
                 userViewModel.currentUserState.collect {
                     if (it != null) {
                         userViewModel.chatListItems.collect { chatListItems ->
-                            Log.d("COLLECT", "getChatListItem: chatListItems: $chatListItems")
                             chatListAdapter.dataset = chatListItems.sortedBy { chatListItem ->
                                 chatListItem.dialog?.messages?.values?.last()?.timestamp
                             }.reversed()

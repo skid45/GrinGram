@@ -26,17 +26,17 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
                 android:padding="8dp"
-                tools:text="message 253 515 12 35 1235 1235 21 35 1235 2135 125 1 23535 1235 215" />
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
+                tools:text="Message 253 515 12 35 1235 1235 21 35 1235 2135 125 1 23535 1235 215" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
-                android:layout_marginStart="5dp"
-                android:padding="3dp"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:paddingHorizontal="10dp"
+                android:paddingVertical="5dp">
 
                 <TextView
                     android:id="@+id/timestamp"
@@ -50,8 +50,9 @@
                     android:layout_width="20dp"
                     android:layout_height="20dp"
                     android:layout_marginStart="3dp"
+                    android:contentDescription="@string/checkmark"
                     android:src="@drawable/checkmark_icon"
-                    android:contentDescription="@string/checkmark" />
+                    tools:visibility="gone" />
 
             </LinearLayout>
         </LinearLayout>

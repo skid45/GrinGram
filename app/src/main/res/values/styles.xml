@@ -33,7 +33,6 @@
     <style name="MaterialCardStyle.NewMessageIndicator">
         <item name="android:backgroundTint">@color/colorPrimary</item>
         <item name="cardCornerRadius">15dp</item>
-        <item name="cardUseCompatPadding">true</item>
     </style>
 
     <style name="Message" parent="Widget.MaterialComponents.CardView">
