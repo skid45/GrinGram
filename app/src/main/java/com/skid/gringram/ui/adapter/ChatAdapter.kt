@@ -2,9 +2,11 @@ package com.skid.gringram.ui.adapter
 
 import android.view.Gravity
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.skid.gringram.R
 import com.skid.gringram.databinding.MessageBinding
 import com.skid.gringram.ui.model.Message
 import com.skid.gringram.ui.model.User
@@ -22,6 +24,8 @@ class ChatAdapter : MainAdapter<Message, ChatAdapter.ViewHolder>() {
 
     override var currentUser: User? = null
 
+    var messageKeys: List<String> = emptyList()
+
     class ViewHolder(private val binding: MessageBinding) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(message: Message, currentUser: User?) = with(binding) {
@@ -31,11 +35,20 @@ class ChatAdapter : MainAdapter<Message, ChatAdapter.ViewHolder>() {
                         gravity = Gravity.END
                         setPaddingRelative(50, 0, 0, 0)
                     }
+
+                    viewedCheckmark.visibility = View.VISIBLE
+                    if (message.viewed == true) {
+                        viewedCheckmark.setImageResource(R.drawable.checkmark_done_icon)
+                    } else {
+                        viewedCheckmark.setImageResource(R.drawable.checkmark_icon)
+                    }
                 } else {
                     coreMessageLayout.apply {
                         gravity = Gravity.START
                         setPaddingRelative(0, 0, 50, 0)
                     }
+
+                    viewedCheckmark.visibility = View.GONE
                 }
 
                 messageText.text = message.text

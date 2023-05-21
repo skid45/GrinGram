@@ -39,7 +39,6 @@ class ContactListFragment : Fragment() {
                     R.id.action_contactListFragment_to_chatFragment, bundle
                 )
             }
-
             override fun addContact(uid: String) = userViewModel.addContact(uid)
             override fun removeContact(uid: String) = userViewModel.removeContact(uid)
         })
@@ -89,17 +88,6 @@ class ContactListFragment : Fragment() {
         contactListRecyclerView.layoutManager = LinearLayoutManager(context)
         contactListRecyclerView.adapter = contactListAdapter
     }
-
-
-//    private fun userStateCollect() {
-//        viewLifecycleOwner.lifecycleScope.launch {
-//            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-//                userViewModel.currentUserState.collect {
-//                    contactListAdapter.currentUser = it
-//                }
-//            }
-//        }
-//    }
 
     private fun userContactsCollect() {
         viewLifecycleOwner.lifecycleScope.launch {

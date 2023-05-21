@@ -4,4 +4,5 @@ data class Message(
     val text: String = "",
     val from: String = "",
     val timestamp: Long? = null,
+    val viewed: Boolean? = null,
 )

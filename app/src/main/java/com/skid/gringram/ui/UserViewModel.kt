@@ -3,11 +3,15 @@ package com.skid.gringram.ui
 import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewModelScope
+import com.skid.gringram.ui.model.ChatListItem
 import com.skid.gringram.ui.model.Dialog
 import com.skid.gringram.ui.model.User
 import com.skid.gringram.ui.repositories.UserRepository
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 import java.util.*
 
 class UserViewModel(
@@ -19,10 +23,29 @@ class UserViewModel(
         userRepository.currentUserContactList.asStateFlow()
     val currentUserDialogs: StateFlow<List<Dialog>> =
         userRepository.currentUserDialogs.asStateFlow()
+    private val usersForDialogs: StateFlow<List<User>> =
+        userRepository.usersForDialogs.asStateFlow()
+    private val _chatListItems: MutableStateFlow<List<ChatListItem>> = MutableStateFlow(emptyList())
+    val chatListItems: StateFlow<List<ChatListItem>> = _chatListItems.asStateFlow()
     val contactsByQuery: StateFlow<List<User>> = userRepository.contactsByQuery.asStateFlow()
 
     init {
         userRepository.addCurrentUserValueEventListener()
+    }
+
+    fun getChatListItem() {
+        viewModelScope.launch {
+            usersForDialogs.collect {
+                if (usersForDialogs.value.size == currentUserDialogs.value.size) {
+                    _chatListItems.value = it.map { user ->
+                        ChatListItem(
+                            user,
+                            currentUserDialogs.value
+                                .first { dialog -> dialog.companionUserUid == user.uid })
+                    }
+                }
+            }
+        }
     }
 
     fun changeUserPhoto(uri: Uri) {
@@ -45,10 +68,17 @@ class UserViewModel(
         userRepository.sendMessage(text, recipientUserUid)
     }
 
+    fun updateMessageStatus(messageKey: String?, recipientUserUid: String) {
+        userRepository.updateMessageStatus(messageKey, recipientUserUid)
+    }
+
     override fun onCleared() {
         super.onCleared()
+        _chatListItems.value = emptyList()
         userRepository.removeCurrentUserValueEventListener()
     }
+
+
 }
 
 @Suppress("UNCHECKED_CAST")

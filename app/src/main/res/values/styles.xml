@@ -30,6 +30,12 @@
         <item name="cardCornerRadius">10dp</item>
     </style>
 
+    <style name="MaterialCardStyle.NewMessageIndicator">
+        <item name="android:backgroundTint">@color/colorPrimary</item>
+        <item name="cardCornerRadius">15dp</item>
+        <item name="cardUseCompatPadding">true</item>
+    </style>
+
     <style name="Message" parent="Widget.MaterialComponents.CardView">
         <item name="android:backgroundTint">@color/colorSurface</item>
         <item name="cardCornerRadius">20dp</item>

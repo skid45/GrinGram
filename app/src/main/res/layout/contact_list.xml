@@ -14,8 +14,7 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/contact_list_recycler_view"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:overScrollMode="never" />
+            android:layout_height="wrap_content" />
     </androidx.core.widget.NestedScrollView>
 
     <com.google.android.material.appbar.AppBarLayout
@@ -39,7 +38,8 @@
             android:hint="@string/search"
             android:inputType="text"
             android:maxLines="1"
-            android:paddingHorizontal="10dp" />
+            android:paddingHorizontal="10dp"
+            android:autofillHints="username" />
     </com.google.android.material.appbar.AppBarLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

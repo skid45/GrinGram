@@ -1,6 +1,6 @@
 package com.skid.gringram.ui.model
 
 data class Dialog(
-    val companionUserUid: String? = null,
-    val messages: List<Message> = emptyList(),
+    val companionUserUid: String? = "",
+    val messages: Map<String, Message> = emptyMap(),
 )

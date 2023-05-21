@@ -22,6 +22,7 @@ class UserRepository {
         MutableStateFlow(emptySet())
     val currentUserDialogs: MutableStateFlow<List<Dialog>> =
         MutableStateFlow(emptyList())
+    val usersForDialogs: MutableStateFlow<List<User>> = MutableStateFlow(emptyList())
     val contactsByQuery: MutableStateFlow<List<User>> = MutableStateFlow(emptyList())
 
 
@@ -58,21 +59,38 @@ class UserRepository {
             val dialogs = mutableListOf<Dialog>()
             for (item in snapshot.children) {
                 val companionUserUid = item.key
-                val messages = mutableListOf<Message>()
+                val messages = mutableMapOf<String, Message>()
                 for (messageItem in item.children) {
                     val message = messageItem.getValue(Message::class.java)!!
-                    messages.add(message)
+                    messages[messageItem.key.toString()] = message
                 }
                 val dialog = Dialog(companionUserUid, messages)
                 dialogs.add(dialog)
             }
             currentUserDialogs.value = dialogs.toList()
+            loadUsersForDialogs(currentUserDialogs.value)
         }
 
         override fun onCancelled(error: DatabaseError) {
             Log.w("Database", "loadDialogs:onCancelled", error.toException())
         }
+    }
 
+    private val usersForDialogsValueEventListener = object : ValueEventListener {
+
+        override fun onDataChange(snapshot: DataSnapshot) {
+            val users = usersForDialogs.value.toMutableList()
+            for (item in snapshot.children) {
+                val user = item.getValue(User::class.java)!!
+                users.removeIf { it.uid == user.uid }
+                users.add(user)
+            }
+            usersForDialogs.value = users
+        }
+
+        override fun onCancelled(error: DatabaseError) {
+            Log.w("Database", "loadUsersForDialogs:onCancelled", error.toException())
+        }
     }
 
     private val contactsByQueryValueEventListener = object : ValueEventListener {
@@ -102,6 +120,7 @@ class UserRepository {
             .removeEventListener(currentUserValueEventListener)
         currentUserState.value = null
         currentUserDialogs.value = emptyList()
+        usersForDialogs.value = emptyList()
         currentUserContactList.value = emptySet()
         contactsByQuery.value = emptyList()
     }
@@ -122,6 +141,13 @@ class UserRepository {
         val query = database.getReference("messages").child("${currentUserState.value?.uid}")
         query.addValueEventListener(currentUserDialogsValueEventListener)
 
+    }
+
+    fun loadUsersForDialogs(dialogs: List<Dialog>) {
+        dialogs.forEach {
+            database.getReference("users").orderByKey().equalTo(it.companionUserUid)
+                .addListenerForSingleValueEvent(usersForDialogsValueEventListener)
+        }
     }
 
     fun changeUserPhoto(uri: Uri) {
@@ -166,11 +192,22 @@ class UserRepository {
         val message = mapOf(
             "text" to text,
             "from" to currentUserState.value?.uid.toString(),
-            "timestamp" to ServerValue.TIMESTAMP
+            "timestamp" to ServerValue.TIMESTAMP,
+            "viewed" to false
         )
 
         database.reference.child("$refDialogCurrentUser/$messageKey").setValue(message)
         database.reference.child("$refDialogRecipientUser/$messageKey").setValue(message)
+    }
+
+    fun updateMessageStatus(messageKey: String?, recipientUserUid: String) {
+        val refMessageCurrentUser =
+            "messages/${currentUserState.value?.uid}/$recipientUserUid/$messageKey"
+        val refMessageRecipientUser =
+            "messages/$recipientUserUid/${currentUserState.value?.uid}/$messageKey"
+
+        database.reference.child(refMessageCurrentUser).child("viewed").setValue(true)
+        database.reference.child(refMessageRecipientUser).child("viewed").setValue(true)
     }
 
 

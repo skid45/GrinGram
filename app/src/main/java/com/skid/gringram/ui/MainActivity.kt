@@ -30,6 +30,8 @@ class MainActivity : AppCompatActivity() {
                 R.id.chatListFragment -> navController.navigate(R.id.action_chatListFragment_to_signInFragment)
                 R.id.settingsFragment -> navController.navigate(R.id.action_settingsFragment_to_signInFragment)
             }
+        } else {
+            navController.navigate(R.id.action_signInFragment_to_chatListFragment)
         }
     }
 
@@ -45,7 +47,6 @@ class MainActivity : AppCompatActivity() {
                 binding.bottomNavigationView.visibility = View.GONE
             }
         }
-        supportActionBar?.hide()
         auth.addAuthStateListener(firebaseAuthStateListener)
     }
 }

@@ -3,6 +3,7 @@ package com.skid.gringram.ui
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -57,13 +58,48 @@ class ChatFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 userViewModel.currentUserDialogs.collect { dialogs ->
-                    chatAdapter.dataset =
-                        dialogs.find { it.companionUserUid == companionUser?.uid }?.messages
-                            ?: emptyList()
+                    val dialog = dialogs.find { it.companionUserUid == companionUser?.uid }
+                    if (dialog != null) {
+                        val messages = dialog.messages.values.toList()
+                        chatAdapter.dataset = messages
+                        chatAdapter.messageKeys = dialog.messages.keys.toList()
+                    }
                     scrollChatToLastPosition()
                 }
             }
         }
+
+
+        binding.chatRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                val messages = chatAdapter.dataset
+                if (messages.isNotEmpty()) {
+                    Log.d("checkmark", "messages: $messages")
+                    val layoutManager: LinearLayoutManager =
+                        binding.chatRecyclerView.layoutManager as LinearLayoutManager
+                    val lastVisibleItemPosition =
+                        layoutManager.findLastVisibleItemPosition()
+                    Log.d("checkmark", "lastVisibleItemPosition: $lastVisibleItemPosition")
+                    if (lastVisibleItemPosition >= 0 && messages[lastVisibleItemPosition].viewed == false) {
+                        val firstNotViewedPosition = messages.indexOfFirst {
+                            it.from == companionUser?.uid && it.viewed == false
+                        }
+                        Log.d("checkmark", "firstNotViewedPosition: $firstNotViewedPosition")
+                        if (firstNotViewedPosition >= 0) {
+                            for (index in firstNotViewedPosition..lastVisibleItemPosition) {
+                                if (messages[index].from == companionUser?.uid)
+                                    userViewModel.updateMessageStatus(
+                                        chatAdapter.messageKeys[index],
+                                        companionUser!!.uid!!
+                                    )
+                            }
+                        }
+                    }
+                }
+            }
+        })
+
     }
 
     override fun onDestroyView() {

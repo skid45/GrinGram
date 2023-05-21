@@ -13,8 +13,7 @@ import com.squareup.picasso.Picasso
 
 class ContactListAdapter(
     private val actionListener: ContactListActionListener,
-) :
-    MainAdapter<User, ContactListAdapter.ViewHolder>(), OnClickListener {
+) : MainAdapter<User, ContactListAdapter.ViewHolder>(), OnClickListener {
     override var dataset: List<User> = emptyList()
         set(newDataset) {
             val diffUtilCallback = UserDiffUtilCallback(field, newDataset)
