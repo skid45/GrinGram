@@ -43,7 +43,46 @@
             android:fadeScrollbars="true"
             android:scrollbars="vertical"
             app:layout_constraintBottom_toTopOf="@id/input_message_layout"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            tools:listitem="@layout/message" />
+
+        <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+            android:id="@+id/fab_scroll_chat_down"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="10dp"
+            android:backgroundTint="@color/colorOnSurfaceVariant"
+            android:contentDescription="@string/fab"
+            app:icon="@drawable/down_arrow"
+            app:iconSize="30dp"
+            app:iconTint="@color/colorBackground"
+            app:layout_constraintBottom_toTopOf="@id/input_message_layout"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <com.google.android.material.card.MaterialCardView
+            style="@style/MaterialCardStyle.NewMessageIndicator"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            app:cardElevation="6dp"
+            app:layout_constraintBottom_toTopOf="@id/fab_scroll_chat_down"
+            app:layout_constraintEnd_toEndOf="@id/fab_scroll_chat_down"
+            app:layout_constraintStart_toStartOf="@id/fab_scroll_chat_down"
+            app:layout_constraintTop_toTopOf="@id/fab_scroll_chat_down">
+
+            <TextView
+                android:id="@+id/new_messages_indicator_on_chat_fab"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:paddingHorizontal="6dp"
+                android:paddingVertical="2dp"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
+                android:visibility="gone"
+                tools:text="311"
+                tools:visibility="visible" />
+        </com.google.android.material.card.MaterialCardView>
 
         <LinearLayout
             android:id="@+id/input_message_layout"

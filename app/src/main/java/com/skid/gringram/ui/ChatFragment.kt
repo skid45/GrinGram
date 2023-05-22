@@ -20,6 +20,7 @@ import com.skid.gringram.utils.customGetSerializable
 import com.skid.gringram.utils.userStateCollect
 import com.squareup.picasso.Picasso
 import kotlinx.coroutines.Runnable
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 
 class ChatFragment : Fragment() {
@@ -34,6 +35,7 @@ class ChatFragment : Fragment() {
 
     private val companionUser by lazy { arguments?.customGetSerializable<User>("companionUser") }
 
+    private val countNewMessages: MutableStateFlow<Int> = MutableStateFlow(0)
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -62,6 +64,14 @@ class ChatFragment : Fragment() {
                         val messages = dialog.messages.values.toList()
                         chatAdapter.dataset = messages
                         chatAdapter.messageKeys = dialog.messages.keys.toList()
+
+                        countNewMessages.value = messages.count {
+                            it.from == companionUser?.uid && it.viewed == false
+                        }
+                        if (countNewMessages.value > 0) {
+                            binding.newMessagesIndicatorOnChatFab.text =
+                                countNewMessages.value.toString()
+                        }
                     }
                     if ((binding.chatRecyclerView.layoutManager as LinearLayoutManager)
                             .findLastVisibleItemPosition() == chatAdapter.itemCount - 2
@@ -130,6 +140,21 @@ class ChatFragment : Fragment() {
             chatRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                     super.onScrolled(recyclerView, dx, dy)
+
+                    if (!recyclerView.canScrollVertically(1)) fabScrollChatDown.hide()
+                    else if (dy < 0) {
+                        fabScrollChatDown.show()
+                        viewLifecycleOwner.lifecycleScope.launch {
+                            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                                countNewMessages.collect {
+                                    if (it > 0) {
+                                        newMessagesIndicatorOnChatFab.visibility = View.VISIBLE
+                                    } else newMessagesIndicatorOnChatFab.visibility = View.GONE
+                                }
+                            }
+                        }
+                    }
+
                     val messages = chatAdapter.dataset
                     if (messages.isNotEmpty()) {
                         val layoutManager: LinearLayoutManager =
@@ -154,6 +179,9 @@ class ChatFragment : Fragment() {
                 }
             })
 
+            fabScrollChatDown.setOnClickListener {
+                scrollChatToLastPosition()
+            }
         }
     }
 }

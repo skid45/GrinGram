@@ -24,4 +24,5 @@
     <string name="send">Send</string>
     <string name="messages">Messages</string>
     <string name="checkmark">checkmark</string>
+    <string name="fab">FAB</string>
 </resources>
