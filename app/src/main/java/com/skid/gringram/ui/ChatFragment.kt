@@ -63,7 +63,11 @@ class ChatFragment : Fragment() {
                         chatAdapter.dataset = messages
                         chatAdapter.messageKeys = dialog.messages.keys.toList()
                     }
-                    scrollChatToLastPosition()
+                    if ((binding.chatRecyclerView.layoutManager as LinearLayoutManager)
+                            .findLastVisibleItemPosition() == chatAdapter.itemCount - 2
+                    ) {
+                        scrollChatToLastPosition()
+                    }
                 }
             }
         }
@@ -140,8 +144,8 @@ class ChatFragment : Fragment() {
                                 for (index in firstNotViewedPosition..lastVisibleItemPosition) {
                                     if (messages[index].from == companionUser?.uid)
                                         userViewModel.updateMessageStatus(
-                                            chatAdapter.messageKeys[index],
-                                            companionUser!!.uid!!
+                                            messageKey = chatAdapter.messageKeys[index],
+                                            recipientUserUid = companionUser!!.uid!!
                                         )
                                 }
                             }
@@ -149,6 +153,7 @@ class ChatFragment : Fragment() {
                     }
                 }
             })
+
         }
     }
 }
