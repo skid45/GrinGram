@@ -15,4 +15,5 @@
     <color name="colorOnSurfaceVariant">#747679</color>
     <color name="colorOnSurface">#303030</color>
     <color name="colorBackground">#FFFFFF</color>
+    <color name="colorError">#F61010</color>
 </resources>

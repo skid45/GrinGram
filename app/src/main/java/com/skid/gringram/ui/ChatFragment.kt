@@ -14,6 +14,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.skid.gringram.databinding.ChatBinding
+import com.skid.gringram.ui.adapter.ChatActionListener
 import com.skid.gringram.ui.adapter.ChatAdapter
 import com.skid.gringram.ui.model.User
 import com.skid.gringram.utils.customGetSerializable
@@ -31,7 +32,13 @@ class ChatFragment : Fragment() {
         UserViewModelFactory(activity?.application as GringramApp)
     }
 
-    private val chatAdapter by lazy { ChatAdapter() }
+    private val chatAdapter by lazy {
+        ChatAdapter(companionUser, object : ChatActionListener {
+            override fun deleteMessage(messageKey: String, deleteBoth: Boolean) {
+                userViewModel.deleteMessage(messageKey, deleteBoth, companionUser?.uid.toString())
+            }
+        })
+    }
 
     private val companionUser by lazy { arguments?.customGetSerializable<User>("companionUser") }
 

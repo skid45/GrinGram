@@ -25,4 +25,8 @@
     <string name="messages">Messages</string>
     <string name="checkmark">checkmark</string>
     <string name="fab">FAB</string>
+    <string name="delete">Delete</string>
+    <string name="copy">Copy</string>
+    <string name="delete_message">Delete message</string>
+    <string name="are_you_sure_you_want_to_delete_this_message">Are you sure you want to delete this message?</string>
 </resources>

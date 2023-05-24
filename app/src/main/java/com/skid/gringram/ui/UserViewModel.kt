@@ -78,6 +78,10 @@ class UserViewModel(
         userRepository.removeCurrentUserValueEventListener()
     }
 
+    fun deleteMessage(messageKey: String, deleteBoth: Boolean, recipientUserUid: String) {
+        userRepository.deleteMessage(messageKey, deleteBoth, recipientUserUid)
+    }
+
 
 }
 

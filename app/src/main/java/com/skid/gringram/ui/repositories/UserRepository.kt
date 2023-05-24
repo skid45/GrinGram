@@ -206,8 +206,29 @@ class UserRepository {
         val refMessageRecipientUser =
             "messages/$recipientUserUid/${currentUserState.value?.uid}/$messageKey"
 
-        database.reference.child(refMessageCurrentUser).child("viewed").setValue(true)
-        database.reference.child(refMessageRecipientUser).child("viewed").setValue(true)
+        database.reference.child(refMessageCurrentUser).get().addOnCompleteListener {
+            if (it.result.exists()) {
+                database.reference.child(refMessageCurrentUser).child("viewed").setValue(true)
+            }
+        }
+
+        database.reference.child(refMessageRecipientUser).get().addOnCompleteListener {
+            if (it.result.exists()) {
+                database.reference.child(refMessageRecipientUser).child("viewed").setValue(true)
+            }
+        }
+    }
+
+    fun deleteMessage(messageKey: String, deleteBoth: Boolean, recipientUserUid: String) {
+        val refMessageCurrentUser =
+            "messages/${currentUserState.value?.uid}/$recipientUserUid/$messageKey"
+        database.reference.child(refMessageCurrentUser).removeValue()
+
+        if (deleteBoth) {
+            val refMessageRecipientUser =
+                "messages/$recipientUserUid/${currentUserState.value?.uid}/$messageKey"
+            database.reference.child(refMessageRecipientUser).removeValue()
+        }
     }
 
 
