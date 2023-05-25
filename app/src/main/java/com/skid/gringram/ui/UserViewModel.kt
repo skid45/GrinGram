@@ -36,7 +36,7 @@ class UserViewModel(
     fun getChatListItem() {
         viewModelScope.launch {
             usersForDialogs.collect {
-                if (usersForDialogs.value.size == currentUserDialogs.value.size) {
+                if (it.size == currentUserDialogs.value.size) {
                     _chatListItems.value = it.map { user ->
                         ChatListItem(
                             user,
