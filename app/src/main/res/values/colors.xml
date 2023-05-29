@@ -6,6 +6,9 @@
     <color name="selected">#9FA9AA</color>
     <color name="hint_color">#797979</color>
     <color name="edit_text_color">#BDBFBE</color>
+    <color name="notEnabledTextColor">#57D5D0D0</color>
+    <color name="colorOnline">#7BD116</color>
+
 
     <color name="colorPrimary">#3EB5EB</color>
     <color name="colorSecondary">#3BEDDE</color>

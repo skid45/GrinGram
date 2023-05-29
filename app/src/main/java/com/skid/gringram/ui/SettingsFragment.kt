@@ -73,8 +73,8 @@ class SettingsFragment : Fragment() {
         binding.apply {
             signOut.setOnClickListener {
                 authViewModel.signOut()
-//                navController.navigate(R.id.action_mainAppFragment_to_signInFragment)
             }
+
             changePhoto.setOnClickListener {
                 getContent.launch("image/*")
             }

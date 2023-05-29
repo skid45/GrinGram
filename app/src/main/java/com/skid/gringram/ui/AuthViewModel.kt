@@ -39,6 +39,7 @@ class AuthViewModel(
     }
 
     fun signOut() {
+        userRepository.changeUserOnlineStatus(isOnline = false)
         userRepository.removeCurrentUserValueEventListener()
         authRepository.signOut()
         _signInState.value = null

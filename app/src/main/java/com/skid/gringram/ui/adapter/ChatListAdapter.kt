@@ -36,6 +36,10 @@ class ChatListAdapter(
                 .into(imageChatListItem)
             textNameChatListItem.text = chatListItem.companionUser?.username ?: ""
 
+            if (chatListItem.companionUser?.online == true) {
+                onlineIndicatorChatListItem.visibility = View.VISIBLE
+            } else onlineIndicatorChatListItem.visibility = View.GONE
+
             val lastMessage = chatListItem.dialog?.messages?.values?.last()
             if (lastMessage != null) {
                 textMessageChatListItem.text = lastMessage.text

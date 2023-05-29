@@ -44,6 +44,12 @@
         <item name="dividerColor">@color/colorOnSurfaceVariant</item>
     </style>
 
+    <style name="MaterialToolbarStyle" parent="ThemeOverlay.MaterialComponents.Toolbar.Primary">
+        <item name="android:textAppearance">@style/TextAppearance.MaterialComponents.Body2</item>
+        <item name="colorOnPrimary">@color/colorPrimary</item>
+    </style>
+
+
     <style name="TextAppearance.MaterialComponents.Headline4.PrimaryColor">
         <item name="android:textColor">@color/colorPrimary</item>
         <item name="android:textStyle">bold</item>

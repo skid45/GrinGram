@@ -23,6 +23,7 @@ class UserRepository {
     val currentUserDialogs: MutableStateFlow<List<Dialog>> =
         MutableStateFlow(emptyList())
     val usersForDialogs: MutableStateFlow<List<User>> = MutableStateFlow(emptyList())
+    val companionUserForChatState: MutableStateFlow<User?> = MutableStateFlow(null)
     val contactsByQuery: MutableStateFlow<List<User>> = MutableStateFlow(emptyList())
 
 
@@ -42,10 +43,14 @@ class UserRepository {
 
     private val contactListValueEventListener = object : ValueEventListener {
         override fun onDataChange(snapshot: DataSnapshot) {
+            val contacts = currentUserContactList.value.toMutableSet()
             for (item in snapshot.children) {
                 val contact = item.getValue(User::class.java)!!
-                currentUserContactList.value = currentUserContactList.value + contact
+                contacts.removeIf { it.uid == contact.uid }
+                contacts.add(contact)
             }
+            currentUserContactList.value =
+                contacts.sortedBy { it.onlineTimestamp }.reversed().toSet()
         }
 
         override fun onCancelled(error: DatabaseError) {
@@ -110,6 +115,17 @@ class UserRepository {
         }
     }
 
+    private val companionUserForChatStateValueEventListener = object : ValueEventListener {
+        override fun onDataChange(snapshot: DataSnapshot) {
+            companionUserForChatState.value = snapshot.getValue(User::class.java)
+        }
+
+        override fun onCancelled(error: DatabaseError) {
+            Log.w("Database", "loadCompanionUserForChatState:onCancelled", error.toException())
+        }
+
+    }
+
     fun addCurrentUserValueEventListener() {
         database.getReference("users").child(auth.uid.toString())
             .addValueEventListener(currentUserValueEventListener)
@@ -146,8 +162,21 @@ class UserRepository {
     fun loadUsersForDialogs(dialogs: List<Dialog>) {
         dialogs.forEach {
             database.getReference("users").orderByKey().equalTo(it.companionUserUid)
-                .addListenerForSingleValueEvent(usersForDialogsValueEventListener)
+                .addValueEventListener(usersForDialogsValueEventListener)
         }
+    }
+
+    fun addCompanionUserForChatStateValueEventListener(companionUserUid: String) {
+        val ref = "users/$companionUserUid"
+        database.reference.child(ref)
+            .addValueEventListener(companionUserForChatStateValueEventListener)
+    }
+
+    fun removeCompanionUserForChatStateValueEventListener(companionUserUid: String) {
+        val ref = "users/$companionUserUid"
+        database.reference.child(ref)
+            .removeEventListener(companionUserForChatStateValueEventListener)
+        companionUserForChatState.value = null
     }
 
     fun changeUserPhoto(uri: Uri) {
@@ -166,6 +195,12 @@ class UserRepository {
                 }
             }
         }
+    }
+
+    fun changeUserOnlineStatus(isOnline: Boolean) {
+        val ref = "users/${auth.uid}"
+        database.reference.child(ref).child("online").setValue(isOnline)
+        database.reference.child(ref).child("onlineTimestamp").setValue(ServerValue.TIMESTAMP)
     }
 
     fun addContact(uid: String) {
@@ -230,6 +265,5 @@ class UserRepository {
             database.reference.child(refMessageRecipientUser).removeValue()
         }
     }
-
 
 }

@@ -25,6 +25,8 @@ class UserViewModel(
         userRepository.currentUserDialogs.asStateFlow()
     private val usersForDialogs: StateFlow<List<User>> =
         userRepository.usersForDialogs.asStateFlow()
+    val companionUserForChatState: StateFlow<User?> =
+        userRepository.companionUserForChatState.asStateFlow()
     private val _chatListItems: MutableStateFlow<List<ChatListItem>> = MutableStateFlow(emptyList())
     val chatListItems: StateFlow<List<ChatListItem>> = _chatListItems.asStateFlow()
     val contactsByQuery: StateFlow<List<User>> = userRepository.contactsByQuery.asStateFlow()
@@ -52,8 +54,20 @@ class UserViewModel(
         userRepository.changeUserPhoto(uri)
     }
 
+    fun changeUserOnlineStatus(isOnline: Boolean) {
+        userRepository.changeUserOnlineStatus(isOnline)
+    }
+
     fun sendQueryToReceiveContacts(queryString: String) {
         userRepository.sendQueryToReceiveContacts(queryString)
+    }
+
+    fun addCompanionUserForChatStateValueEventListener(companionUserUid: String) {
+        userRepository.addCompanionUserForChatStateValueEventListener(companionUserUid)
+    }
+
+    fun removeCompanionUserForChatStateValueEventListener(companionUserUid: String) {
+        userRepository.removeCompanionUserForChatStateValueEventListener(companionUserUid)
     }
 
     fun addContact(uid: String) {

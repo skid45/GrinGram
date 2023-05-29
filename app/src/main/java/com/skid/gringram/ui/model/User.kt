@@ -7,4 +7,6 @@ data class User(
     val username: String? = null,
     val photoUri: String? = null,
     val listOfContactsUri: MutableMap<String, String> = mutableMapOf(),
+    val online: Boolean = false,
+    val onlineTimestamp: Long? = null,
 ) : Serializable

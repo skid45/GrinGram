@@ -40,7 +40,11 @@ class MainActivity : AppCompatActivity() {
                 R.id.settingsFragment -> navController.navigate(R.id.action_settingsFragment_to_signInFragment)
             }
         } else {
-            navController.navigate(R.id.action_signInFragment_to_chatListFragment)
+            if (navController.currentDestination?.id == R.id.signInFragment) {
+                navController.navigate(R.id.action_signInFragment_to_chatListFragment)
+            }
+
+            userViewModel.changeUserOnlineStatus(isOnline = true)
 
             lifecycleScope.launch {
                 repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -76,5 +80,19 @@ class MainActivity : AppCompatActivity() {
             }
         }
         auth.addAuthStateListener(firebaseAuthStateListener)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        if (auth.uid != null) {
+            userViewModel.changeUserOnlineStatus(isOnline = false)
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (auth.uid != null) {
+            userViewModel.changeUserOnlineStatus(isOnline = true)
+        }
     }
 }

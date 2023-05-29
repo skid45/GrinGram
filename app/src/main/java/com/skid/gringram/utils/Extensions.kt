@@ -26,6 +26,33 @@ fun Long?.getTimeFromEpochMilliseconds(
     }"
 }
 
+fun Long?.getTimeElapsedFromEpochMilliseconds(
+    timeZone: TimeZone = TimeZone.currentSystemDefault(),
+): String {
+    if (this == null) return ""
+    val localInstant = Instant.fromEpochMilliseconds(this)
+    val localDateTime = localInstant.toLocalDateTime(timeZone)
+    val currentInstant = Clock.System.now()
+
+    val duration = currentInstant - localInstant
+
+    return when {
+        duration.inWholeMinutes < 1L -> "last seen just now"
+        duration.inWholeHours < 1L -> "last seen ${duration.toDateTimePeriod().minutes} minutes ago"
+        duration.inWholeDays < 1L -> "last seen ${duration.toDateTimePeriod().hours} hours ago"
+        duration.inWholeDays < 2L -> {
+            "last seen yesterday at ${
+                localDateTime.hour.toString().padStart(2, '0')
+            }:${localDateTime.minute.toString().padStart(2, '0')}"
+        }
+        else -> {
+            "last seen ${localDateTime.date.dayOfMonth}.${
+                localDateTime.monthNumber.toString().padStart(2, '0')
+            }.${localDateTime.year.toString().takeLast(2)}"
+        }
+    }
+}
+
 fun Long?.getTimeOrDayOfWeekFromEpochMilliseconds(
     timeZone: TimeZone = TimeZone.currentSystemDefault(),
 ): String {

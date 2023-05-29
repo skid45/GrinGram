@@ -1,5 +1,6 @@
 package com.skid.gringram.ui.adapter
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.OnClickListener
@@ -9,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.skid.gringram.R
 import com.skid.gringram.databinding.ContactListItemBinding
 import com.skid.gringram.ui.model.User
+import com.skid.gringram.utils.getTimeElapsedFromEpochMilliseconds
 import com.squareup.picasso.Picasso
 
 class ContactListAdapter(
@@ -25,8 +27,10 @@ class ContactListAdapter(
     override var currentUser: User? = null
 
 
-    class ViewHolder(private val binding: ContactListItemBinding) :
-        RecyclerView.ViewHolder(binding.root) {
+    class ViewHolder(
+        private val binding: ContactListItemBinding,
+        private val context: Context,
+    ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(contactItem: User, currentUser: User?) = with(binding) {
             addContactButton.tag = contactItem
@@ -37,6 +41,16 @@ class ContactListAdapter(
             contactItem.photoUri.let {
                 Picasso.get().load(it).fit().centerCrop().into(contactImage)
             }
+
+            if (contactItem.online) {
+                contactUserStatus.setTextColor(context.getColor(R.color.colorPrimary))
+                contactUserStatus.text = context.getString(R.string.online)
+            } else {
+                contactUserStatus.setTextColor(context.getColor(android.R.color.darker_gray))
+                contactUserStatus.text =
+                    contactItem.onlineTimestamp.getTimeElapsedFromEpochMilliseconds()
+            }
+
             if (currentUser != null) {
                 if (currentUser.listOfContactsUri.contains(contactItem.uid)) {
                     removeContactButton.visibility = View.VISIBLE
@@ -57,7 +71,7 @@ class ContactListAdapter(
         binding.removeContactButton.setOnClickListener(this)
         binding.contactItemLayout.setOnClickListener(this)
 
-        return ViewHolder(binding)
+        return ViewHolder(binding, parent.context)
     }
 
     override fun onClick(p0: View) {

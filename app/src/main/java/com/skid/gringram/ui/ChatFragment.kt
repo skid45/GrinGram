@@ -13,11 +13,13 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.skid.gringram.R
 import com.skid.gringram.databinding.ChatBinding
 import com.skid.gringram.ui.adapter.ChatActionListener
 import com.skid.gringram.ui.adapter.ChatAdapter
 import com.skid.gringram.ui.model.User
 import com.skid.gringram.utils.customGetSerializable
+import com.skid.gringram.utils.getTimeElapsedFromEpochMilliseconds
 import com.skid.gringram.utils.userStateCollect
 import com.squareup.picasso.Picasso
 import kotlinx.coroutines.Runnable
@@ -54,14 +56,22 @@ class ChatFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.apply {
-            chatToolbar.title = companionUser!!.username
-            Picasso.get().load(companionUser!!.photoUri).fit().centerCrop().into(chatUserImage)
-        }
+        setCompanionUserToToolbar(companionUser!!)
+        userViewModel.addCompanionUserForChatStateValueEventListener(companionUser!!.uid!!)
 
         recyclerViewInit()
         setListeners()
         userStateCollect(userViewModel.currentUserState, chatAdapter)
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                userViewModel.companionUserForChatState.collect {
+                    if (it != null) {
+                        setCompanionUserToToolbar(it)
+                    }
+                }
+            }
+        }
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -93,7 +103,21 @@ class ChatFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
+        userViewModel.removeCompanionUserForChatStateValueEventListener(companionUser!!.uid!!)
         _binding = null
+    }
+
+    private fun setCompanionUserToToolbar(companionUser: User) = with(binding) {
+        chatToolbar.title = companionUser.username
+        if (companionUser.online) {
+            chatToolbar.setSubtitleTextColor(requireActivity().getColor(R.color.colorPrimary))
+            chatToolbar.subtitle = requireActivity().getString(R.string.online)
+        } else {
+            chatToolbar.setSubtitleTextColor(requireActivity().getColor(android.R.color.darker_gray))
+            chatToolbar.subtitle =
+                companionUser.onlineTimestamp.getTimeElapsedFromEpochMilliseconds()
+        }
+        Picasso.get().load(companionUser.photoUri).fit().centerCrop().into(chatUserImage)
     }
 
     private fun recyclerViewInit() = with(binding) {
