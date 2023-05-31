@@ -9,6 +9,7 @@ import com.skid.gringram.ui.model.Dialog
 import com.skid.gringram.ui.model.Message
 import com.skid.gringram.ui.model.User
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.tasks.await
 import java.util.*
 
 class UserRepository {
@@ -201,6 +202,17 @@ class UserRepository {
         val ref = "users/${auth.uid}"
         database.reference.child(ref).child("online").setValue(isOnline)
         database.reference.child(ref).child("onlineTimestamp").setValue(ServerValue.TIMESTAMP)
+    }
+
+    suspend fun validateUsername(username: String): Boolean {
+        if (username == currentUserState.value?.username) return false
+        val result = database.reference.child("users").orderByChild("username").equalTo(username)
+            .get().await()
+        return result.exists()
+    }
+
+    fun changeUsername(username: String) {
+        database.reference.child("users/${currentUserState.value?.uid}/username").setValue(username)
     }
 
     fun addContact(uid: String) {

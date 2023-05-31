@@ -7,12 +7,16 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
+import com.skid.gringram.R
 import com.skid.gringram.databinding.SettingsBinding
+import com.skid.gringram.ui.model.User
 import com.squareup.picasso.Picasso
 import kotlinx.coroutines.launch
 
@@ -28,6 +32,7 @@ class SettingsFragment : Fragment() {
         UserViewModelFactory(activity?.application as GringramApp)
     }
 
+    private var currentUser: User = User()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -45,6 +50,7 @@ class SettingsFragment : Fragment() {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 userViewModel.currentUserState.collect {
                     if (it != null) {
+                        currentUser = it
                         binding.settingsCollapsingTollbar.title = it.username
                         if (it.photoUri != null) {
                             Picasso.get().load(it.photoUri).fit().centerCrop()
@@ -77,6 +83,14 @@ class SettingsFragment : Fragment() {
 
             changePhoto.setOnClickListener {
                 getContent.launch("image/*")
+            }
+
+            settingsEditButton.setOnClickListener {
+                val bundle = bundleOf("currentUser" to currentUser)
+                findNavController().navigate(
+                    resId = R.id.action_settingsFragment_to_editProfileFragment,
+                    args = bundle
+                )
             }
         }
     }

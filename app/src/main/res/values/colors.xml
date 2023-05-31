@@ -3,7 +3,8 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="grey">#DAD3D3</color>
-    <color name="selected">#9FA9AA</color>
+    <color name="selected_primary">#8B3EB5EB</color>
+    <color name="selected_red">#8BF61010</color>
     <color name="hint_color">#797979</color>
     <color name="edit_text_color">#BDBFBE</color>
     <color name="notEnabledTextColor">#57D5D0D0</color>

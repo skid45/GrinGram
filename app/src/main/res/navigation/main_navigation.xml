@@ -85,6 +85,9 @@
             app:popExitAnim="@anim/slide_out_right"
             app:popUpTo="@id/main_navigation"
             app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_settingsFragment_to_editProfileFragment"
+            app:destination="@id/editProfileFragment" />
     </fragment>
     <fragment
         android:id="@+id/contactListFragment"
@@ -118,6 +121,15 @@
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right" />
+    </fragment>
+    <fragment
+        android:id="@+id/editProfileFragment"
+        android:name="com.skid.gringram.ui.EditProfileFragment"
+        android:label="edit_profile"
+        tools:layout="@layout/edit_profile">
+        <action
+            android:id="@+id/action_editProfileFragment_to_settingsFragment"
+            app:destination="@id/settingsFragment" />
     </fragment>
 
 </navigation>

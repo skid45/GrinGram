@@ -59,8 +59,45 @@
         <item name="android:textStyle">bold</item>
     </style>
 
+    <style name="TextAppearance.MaterialComponents.Headline7" parent="TextAppearance.MaterialComponents.Headline6">
+        <item name="android:textSize">18sp</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:fontFamily">sans-serif-condensed-medium</item>
+        <item name="fontFamily">sans-serif-condensed-medium</item>
+    </style>
+
+    <style name="TextAppearance.MaterialComponents.Headline7.PrimaryColor">
+        <item name="android:textColor">@drawable/text_color_selector_primary_color</item>
+    </style>
+
+    <style name="TextAppearance.MaterialComponents.Headline7.SansSerif">
+        <item name="android:fontFamily">sans-serif</item>
+        <item name="fontFamily">sans-serif</item>
+    </style>
+
+    <style name="TextAppearance.MaterialComponents.Headline7.SansSerif.PrimaryColor">
+        <item name="android:textColor">@drawable/text_color_selector_primary_color</item>
+    </style>
+
+    <style name="TextAppearance.MaterialComponents.Headline7.SansSerif.RedColor">
+        <item name="android:textColor">@drawable/text_color_selector_red_color</item>
+    </style>
+
+    <style name="TextAppearance.MaterialComponents.Headline7.RedColor">
+        <item name="android:textColor">@drawable/text_color_selector_red_color</item>
+    </style>
+
     <style name="TextAppearance.MaterialComponents.Body1.Bold">
         <item name="android:textStyle">bold</item>
     </style>
+
+    <style name="TextAppearance.MaterialComponents.Body1.PrimaryColor">
+        <item name="android:textColor">@color/colorPrimary</item>
+    </style>
+
+    <style name="TextAppearance.MaterialComponents.Caption.RedColor">
+        <item name="android:textColor">@color/colorError</item>
+    </style>
+
 
 </resources>

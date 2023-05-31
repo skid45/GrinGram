@@ -35,8 +35,20 @@
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 android:theme="@style/MaterialToolbarStyle"
-                app:layout_collapseMode="pin"
-                app:menu="@menu/settings_toolbar_menu" />
+                app:layout_collapseMode="pin">
+
+                <TextView
+                    android:id="@+id/settings_edit_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:paddingHorizontal="10dp"
+                    android:text="@string/edit"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Headline7.PrimaryColor" />
+
+            </com.google.android.material.appbar.MaterialToolbar>
         </com.google.android.material.appbar.CollapsingToolbarLayout>
 
     </com.google.android.material.appbar.AppBarLayout>

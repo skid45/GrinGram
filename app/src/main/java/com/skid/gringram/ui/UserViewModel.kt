@@ -30,6 +30,8 @@ class UserViewModel(
     private val _chatListItems: MutableStateFlow<List<ChatListItem>> = MutableStateFlow(emptyList())
     val chatListItems: StateFlow<List<ChatListItem>> = _chatListItems.asStateFlow()
     val contactsByQuery: StateFlow<List<User>> = userRepository.contactsByQuery.asStateFlow()
+    private val _usernameIsValid: MutableStateFlow<Boolean> = MutableStateFlow(true)
+    val usernameIsValid: StateFlow<Boolean> = _usernameIsValid.asStateFlow()
 
     init {
         userRepository.addCurrentUserValueEventListener()
@@ -96,6 +98,15 @@ class UserViewModel(
         userRepository.deleteMessage(messageKey, deleteBoth, recipientUserUid)
     }
 
+    fun validateUsername(username: String) {
+        viewModelScope.launch {
+            _usernameIsValid.value = userRepository.validateUsername(username)
+        }
+    }
+
+    fun changeUsername(username: String) {
+        userRepository.changeUsername(username)
+    }
 
 }
 
