@@ -66,7 +66,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:contentDescription="@string/checkmark"
-                android:src="@drawable/checkmark_icon"
+                android:src="@drawable/checkmark_icon_primary_color"
                 android:visibility="gone"
                 tools:visibility="visible" />
 

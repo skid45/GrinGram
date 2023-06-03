@@ -48,7 +48,7 @@ class ChatListAdapter(
                     .getTimeOrDayOfWeekFromEpochMilliseconds(TimeZone.currentSystemDefault())
                 if (lastMessage.from != chatListItem.companionUser?.uid) {
                     if (lastMessage.viewed == false) {
-                        viewedCheckmarkChatListItem.setImageResource(R.drawable.checkmark_icon)
+                        viewedCheckmarkChatListItem.setImageResource(R.drawable.checkmark_icon_primary_color)
                     } else {
                         viewedCheckmarkChatListItem.setImageResource(R.drawable.checkmark_done_icon)
                     }

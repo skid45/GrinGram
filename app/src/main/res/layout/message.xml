@@ -52,7 +52,7 @@
                     android:layout_height="20dp"
                     android:layout_marginStart="3dp"
                     android:contentDescription="@string/checkmark"
-                    android:src="@drawable/checkmark_icon"
+                    android:src="@drawable/checkmark_icon_primary_color"
                     tools:visibility="gone" />
 
             </LinearLayout>

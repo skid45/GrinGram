@@ -37,4 +37,7 @@
     <string name="set_new_photo">Set new photo</string>
     <string name="a_user_with_such_a_username_already_exists">A user with such a username already exists</string>
     <string name="username_cannot_be_empty">Username cannot be empty</string>
+    <string name="gallery">Gallery</string>
+    <string name="send_image">Send image</string>
+    <string name="photo_transition">photoTransition</string>
 </resources>

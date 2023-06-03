@@ -1,14 +1,11 @@
 package com.skid.gringram.ui
 
-import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
@@ -47,22 +44,23 @@ class EditProfileFragment : Fragment() {
             Picasso.get().load(currentUser?.photoUri).fit().centerCrop().into(editProfileUserImage)
         }
         setListeners()
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                userViewModel.currentUserState.collect {
+                    if (it?.photoUri != null) {
+                        Picasso.get().load(it.photoUri).fit().centerCrop()
+                            .into(binding.editProfileUserImage)
+                    }
+                }
+            }
+        }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
-
-
-    private val getContent =
-        registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
-            if (uri != null) {
-                binding.editProfileUserImage.setImageURI(uri)
-                userViewModel.changeUserPhoto(uri)
-            } else Toast.makeText(context, "Failed to upload image to storage", Toast.LENGTH_SHORT)
-                .show()
-        }
 
     private fun setListeners() {
         binding.apply {
@@ -71,7 +69,11 @@ class EditProfileFragment : Fragment() {
             }
 
             editProfileSetNewPhotoButton.setOnClickListener {
-                getContent.launch("image/*")
+                val galleryBottomSheetDialogFragment = GalleryBottomSheetDialogFragment()
+                galleryBottomSheetDialogFragment.show(
+                    requireActivity().supportFragmentManager,
+                    "GalleryBottomSheetDialogFragment"
+                )
             }
 
             editProfileDoneButton.setOnClickListener {

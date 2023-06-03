@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".ui.FullScreenPhotoFragment">
+
+    <com.github.chrisbanes.photoview.PhotoView
+        android:id="@+id/fullscreen_photo_photo_view"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:padding="5dp"
+        tools:srcCompat="@drawable/bughsr" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="5dp">
+
+        <ImageButton
+            android:id="@+id/fullscreen_photo_cancel_button"
+            style="@style/ImageButton"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:contentDescription="@string/cancel"
+            android:src="@drawable/cancel_icon" />
+
+        <Space
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+        <ImageButton
+            android:id="@+id/fullscreen_photo_send_photo_button"
+            style="@style/ImageButton.SendMessageButton"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:contentDescription="@string/send_image"
+            android:src="@drawable/checkmark_icon_black_color" />
+
+    </LinearLayout>
+
+</LinearLayout>

@@ -20,8 +20,12 @@
         <item name="cornerRadius">20dp</item>
     </style>
 
-    <style name="SendMessageButton" parent="Widget.AppCompat.ImageButton">
+    <style name="ImageButton" parent="Widget.AppCompat.ImageButton">
         <item name="android:background">@drawable/circle_image_button</item>
+    </style>
+
+    <style name="ImageButton.SendMessageButton">
+        <item name="android:backgroundTint">@color/colorPrimary</item>
     </style>
 
     <style name="MaterialCardStyle" parent="Widget.MaterialComponents.CardView">
@@ -49,6 +53,18 @@
         <item name="colorOnPrimary">@color/colorPrimary</item>
     </style>
 
+    <style name="BottomSheetDialogStyle" parent="Theme.Design.BottomSheetDialog">
+        <item name="android:windowIsFloating">false</item>
+        <item name="bottomSheetStyle">@style/BottomSheetStyle</item>
+    </style>
+
+    <style name="BottomSheetStyle" parent="Widget.Design.BottomSheet.Modal">
+        <item name="android:background">@drawable/bottom_sheet_rounded_background</item>
+    </style>
+
+    <style name="FullscreenDialogStyle" parent="android:Theme.NoTitleBar.Fullscreen">
+        <item name="android:background">@color/colorBackground</item>
+    </style>
 
     <style name="TextAppearance.MaterialComponents.Headline4.PrimaryColor">
         <item name="android:textColor">@color/colorPrimary</item>

@@ -2,6 +2,8 @@
     <!-- Base application theme. -->
     <style name="Theme.GrinGram" parent="Theme.MaterialComponents.DayNight.NoActionBar">
 
+        <item name="android:windowContentTransitions">true</item>
+
         <!-- Status bar color. -->
         <item name="android:windowLightStatusBar">true</item>
         <item name="android:statusBarColor">@color/white</item>

@@ -55,7 +55,7 @@ class ChatAdapter(
                     if (message.viewed == true) {
                         viewedCheckmark.setImageResource(R.drawable.checkmark_done_icon)
                     } else {
-                        viewedCheckmark.setImageResource(R.drawable.checkmark_icon)
+                        viewedCheckmark.setImageResource(R.drawable.checkmark_icon_primary_color)
                     }
                 } else {
                     coreMessageLayout.apply {
