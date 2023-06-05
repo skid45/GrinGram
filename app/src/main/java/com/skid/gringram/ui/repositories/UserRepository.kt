@@ -50,8 +50,7 @@ class UserRepository {
                 contacts.removeIf { it.uid == contact.uid }
                 contacts.add(contact)
             }
-            currentUserContactList.value =
-                contacts.sortedBy { it.onlineTimestamp }.reversed().toSet()
+            currentUserContactList.value = contacts
         }
 
         override fun onCancelled(error: DatabaseError) {

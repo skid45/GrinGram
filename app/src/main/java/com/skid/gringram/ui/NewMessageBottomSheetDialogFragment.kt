@@ -7,12 +7,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.skid.gringram.R
-import com.skid.gringram.databinding.ContactListBinding
+import com.skid.gringram.databinding.NewMessageBottomSheetDialogBinding
 import com.skid.gringram.ui.adapter.ContactListActionListener
 import com.skid.gringram.ui.adapter.ContactListAdapter
 import com.skid.gringram.ui.model.User
@@ -20,10 +22,12 @@ import com.skid.gringram.utils.contactsByQueryCollect
 import com.skid.gringram.utils.userContactsCollect
 import com.skid.gringram.utils.userStateCollect
 
+class NewMessageBottomSheetDialogFragment : BottomSheetDialogFragment() {
 
-class ContactListFragment : Fragment() {
-    private var _binding: ContactListBinding? = null
+    private var _binding: NewMessageBottomSheetDialogBinding? = null
     private val binding get() = _binding!!
+
+    override fun getTheme() = R.style.BottomSheetDialogStyle
 
     private val userViewModel: UserViewModel by activityViewModels {
         UserViewModelFactory(activity?.application as GringramApp)
@@ -34,8 +38,9 @@ class ContactListFragment : Fragment() {
             override fun onChatWithSelectedUser(companionUser: User) {
                 val bundle = bundleOf("companionUser" to companionUser)
                 findNavController().navigate(
-                    R.id.action_contactListFragment_to_chatFragment, bundle
+                    R.id.action_chatListFragment_to_chatFragment, bundle
                 )
+                dismiss()
             }
 
             override fun addContact(uid: String) = userViewModel.addContact(uid)
@@ -47,19 +52,29 @@ class ContactListFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View? {
-        _binding = ContactListBinding.inflate(inflater, container, false)
+        _binding = NewMessageBottomSheetDialogBinding.inflate(inflater, container, false)
         return binding.root
     }
 
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        (dialog as? BottomSheetDialog)?.behavior?.apply {
+            peekHeight = BottomSheetBehavior.PEEK_HEIGHT_AUTO
+            state = BottomSheetBehavior.STATE_EXPANDED
+        }
 
         recyclerViewInit()
         userStateCollect(userViewModel.currentUserState, contactListAdapter)
         userContactsCollect(
             userViewModel.currentUserContactList, contactListAdapter
-        ) { it.onlineTimestamp }
+        ) { it.username }
         setListeners()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        binding.newMessageBottomSheetSearchEditText.setText("")
     }
 
     override fun onDestroyView() {
@@ -67,26 +82,25 @@ class ContactListFragment : Fragment() {
         _binding = null
     }
 
-    override fun onPause() {
-        super.onPause()
-        binding.searchViewEditText.setText("")
-    }
-
     private fun recyclerViewInit() = with(binding) {
-        contactListRecyclerView.layoutManager = LinearLayoutManager(context)
-        contactListRecyclerView.adapter = contactListAdapter
+        newMessageBottomSheetContactListRecyclerView.layoutManager = LinearLayoutManager(context)
+        newMessageBottomSheetContactListRecyclerView.adapter = contactListAdapter
     }
 
     private fun setListeners() {
         binding.apply {
-            searchViewEditText.addTextChangedListener(object : TextWatcher {
+            newMessageBottomSheetCancelButton.setOnClickListener {
+                dismiss()
+            }
+
+            newMessageBottomSheetSearchEditText.addTextChangedListener(object : TextWatcher {
                 override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) = Unit
 
                 override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
                     if (p0.isNullOrBlank()) {
                         userContactsCollect(
                             userViewModel.currentUserContactList, contactListAdapter
-                        ) { it.onlineTimestamp }
+                        ) { it.username }
                     } else {
                         contactsByQueryCollect(userViewModel.contactsByQuery, contactListAdapter) {
                             it.username?.startsWith(p0.toString(), true)!!

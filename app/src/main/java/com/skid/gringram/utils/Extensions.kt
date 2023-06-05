@@ -101,6 +101,34 @@ fun <T : Any, VH : RecyclerView.ViewHolder> Fragment.userStateCollect(
     }
 }
 
+fun <T : Any, VH : RecyclerView.ViewHolder, R : Comparable<R>> Fragment.userContactsCollect(
+    currentUserContactList: StateFlow<Set<T>>,
+    adapter: MainAdapter<T, VH>,
+    sortFunction: (T) -> R?,
+) {
+    viewLifecycleOwner.lifecycleScope.launch {
+        viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+            currentUserContactList.collect {
+                adapter.dataset = it.sortedBy(sortFunction)
+            }
+        }
+    }
+}
+
+fun <T : Any, VH : RecyclerView.ViewHolder> Fragment.contactsByQueryCollect(
+    contactsByQuery: StateFlow<List<T>>,
+    adapter: MainAdapter<T, VH>,
+    filterFunction: (T) -> Boolean,
+) {
+    viewLifecycleOwner.lifecycleScope.launch {
+        viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+            contactsByQuery.collect {
+                adapter.dataset = it.filter(filterFunction)
+            }
+        }
+    }
+}
+
 @Suppress("DEPRECATION")
 inline fun <reified T : Serializable> Bundle.customGetSerializable(key: String): T? {
     return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {

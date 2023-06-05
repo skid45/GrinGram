@@ -40,4 +40,5 @@
     <string name="gallery">Gallery</string>
     <string name="send_image">Send image</string>
     <string name="photo_transition">photoTransition</string>
+    <string name="new_message">New Message</string>
 </resources>

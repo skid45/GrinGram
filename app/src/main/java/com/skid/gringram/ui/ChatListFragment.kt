@@ -50,6 +50,7 @@ class ChatListFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         recyclerViewInit()
+        setListeners()
         userViewModel.getChatListItem()
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -74,5 +75,24 @@ class ChatListFragment : Fragment() {
     private fun recyclerViewInit() = with(binding) {
         chatListRecyclerView.layoutManager = LinearLayoutManager(context)
         chatListRecyclerView.adapter = chatListAdapter
+    }
+
+    private fun setListeners() {
+        binding.apply {
+            chatListToolbar.setOnMenuItemClickListener {
+                when (it.itemId) {
+                    R.id.new_message_item -> {
+                        val newMessageBottomSheetDialogFragment =
+                            NewMessageBottomSheetDialogFragment()
+                        newMessageBottomSheetDialogFragment.show(
+                            requireActivity().supportFragmentManager,
+                            "NewMessageBottomSheetDialogFragment"
+                        )
+                        true
+                    }
+                    else -> false
+                }
+            }
+        }
     }
 }

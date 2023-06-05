@@ -12,10 +12,12 @@
         android:backgroundTint="@color/colorSurface">
 
         <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/chat_list_toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:title="@string/messages"
-            app:titleCentered="true" />
+            app:titleCentered="true"
+            app:menu="@menu/chat_list_menu"/>
 
         <EditText
             android:id="@+id/search_chat_list"
