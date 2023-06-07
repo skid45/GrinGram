@@ -9,4 +9,5 @@ data class User(
     val listOfContactsUri: MutableMap<String, String> = mutableMapOf(),
     val online: Boolean = false,
     val onlineTimestamp: Long? = null,
+    val devices: Map<String, Device> = emptyMap(),
 ) : Serializable

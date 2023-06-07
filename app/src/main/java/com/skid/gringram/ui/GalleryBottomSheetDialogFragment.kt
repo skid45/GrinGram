@@ -7,6 +7,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.database.Cursor
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
 import android.provider.Settings
@@ -78,26 +79,30 @@ class GalleryBottomSheetDialogFragment : BottomSheetDialogFragment(),
         recyclerViewInit()
         setListeners()
 
+        val permission =
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) Manifest.permission.READ_MEDIA_IMAGES
+            else Manifest.permission.READ_EXTERNAL_STORAGE
         if (ContextCompat.checkSelfPermission(
                 requireContext(),
-                Manifest.permission.READ_EXTERNAL_STORAGE
+                permission
             ) == PackageManager.PERMISSION_GRANTED
         ) {
             LoaderManager.getInstance(this).initLoader(IMAGE_LOADER_ID, null, this)
         } else {
-            if (shouldShowRequestPermissionRationale(Manifest.permission.READ_EXTERNAL_STORAGE)) {
+            if (shouldShowRequestPermissionRationale(permission)) {
                 AlertDialog.Builder(requireContext())
                     .setMessage("This app needs access to your external storage to load images.")
                     .setPositiveButton("Settings") { _, _ ->
                         val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
-                        val uri: Uri = Uri.fromParts("package", requireActivity().packageName, null)
+                        val uri: Uri =
+                            Uri.fromParts("package", requireActivity().packageName, null)
                         intent.data = uri
                         startActivity(intent)
                     }
                     .setNegativeButton("Cancel", null)
                     .show()
             } else {
-                requestPermissionLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
+                requestPermissionLauncher.launch(permission)
             }
         }
     }

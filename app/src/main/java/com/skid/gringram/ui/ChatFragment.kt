@@ -140,9 +140,11 @@ class ChatFragment : Fragment() {
             }
 
             sendMessageButton.setOnClickListener {
+                val messageText = messageEditText.text.toString().trim()
                 userViewModel.sendMessage(
-                    messageEditText.text.toString().trim(),
-                    companionUser!!.uid!!
+                    messageText,
+                    companionUser!!.uid!!,
+                    requireContext()
                 )
                 messageEditText.text.clear()
             }

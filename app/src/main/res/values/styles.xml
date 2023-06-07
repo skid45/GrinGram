@@ -66,6 +66,12 @@
         <item name="android:background">@color/colorBackground</item>
     </style>
 
+    <style name="RoundedImageView">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">50%</item>
+    </style>
+
+
     <style name="TextAppearance.MaterialComponents.Headline4.PrimaryColor">
         <item name="android:textColor">@color/colorPrimary</item>
         <item name="android:textStyle">bold</item>

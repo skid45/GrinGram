@@ -1,5 +1,6 @@
 package com.skid.gringram.ui
 
+import android.content.Context
 import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -80,8 +81,8 @@ class UserViewModel(
         userRepository.removeContact(uid)
     }
 
-    fun sendMessage(text: String, recipientUserUid: String) {
-        userRepository.sendMessage(text, recipientUserUid)
+    fun sendMessage(text: String, recipientUserUid: String, context: Context) {
+        userRepository.sendMessage(text, recipientUserUid, context)
     }
 
     fun updateMessageStatus(messageKey: String?, recipientUserUid: String) {
@@ -106,6 +107,10 @@ class UserViewModel(
 
     fun changeUsername(username: String) {
         userRepository.changeUsername(username)
+    }
+
+    fun sendTokenToServer(token: String) {
+        userRepository.sendTokenToServer(token)
     }
 
 }

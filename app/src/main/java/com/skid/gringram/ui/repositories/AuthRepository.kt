@@ -4,6 +4,7 @@ import android.util.Log
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.skid.gringram.ui.model.User
+import com.skid.gringram.utils.getDeviceName
 import kotlinx.coroutines.flow.MutableStateFlow
 
 class AuthRepository {
@@ -28,6 +29,7 @@ class AuthRepository {
         database.getReference("users").child(auth.uid.toString()).setValue(user)
             .addOnCompleteListener {
                 signUpState.value = it.isSuccessful
+                sendUserDeviceAuth(isAuthenticated = true)
             }
     }
 
@@ -37,6 +39,7 @@ class AuthRepository {
             .addOnCompleteListener {
                 if (it.isSuccessful) {
                     signInState.value = true
+                    sendUserDeviceAuth(isAuthenticated = true)
                 } else {
                     signInState.value = false
                     Log.w("Auth", "signInWithEmail:failure", it.exception)
@@ -45,6 +48,12 @@ class AuthRepository {
     }
 
     fun signOut() {
+        sendUserDeviceAuth(isAuthenticated = false)
         auth.signOut()
+    }
+
+    private fun sendUserDeviceAuth(isAuthenticated: Boolean) {
+        val ref = "users/${auth.uid}/devices/${getDeviceName()}/auth"
+        database.reference.child(ref).setValue(isAuthenticated)
     }
 }

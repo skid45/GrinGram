@@ -137,3 +137,14 @@ inline fun <reified T : Serializable> Bundle.customGetSerializable(key: String):
         getSerializable(key) as? T
     }
 }
+
+fun getDeviceName(): String {
+    val manufacturer = Build.MANUFACTURER
+    val model = Build.MODEL
+    val version = Build.VERSION.RELEASE
+    return if (model.startsWith(manufacturer)) {
+        "$model (Android $version)"
+    } else {
+        "$manufacturer $model (Android $version)"
+    }
+}

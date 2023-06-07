@@ -1,15 +1,23 @@
 package com.skid.gringram.ui.repositories
 
+import android.content.Context
 import android.net.Uri
 import android.util.Log
+import com.android.volley.Response
+import com.android.volley.toolbox.JsonObjectRequest
+import com.android.volley.toolbox.Volley
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import com.google.firebase.storage.FirebaseStorage
+import com.skid.gringram.R
 import com.skid.gringram.ui.model.Dialog
 import com.skid.gringram.ui.model.Message
 import com.skid.gringram.ui.model.User
+import com.skid.gringram.utils.getDeviceName
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.tasks.await
+import org.json.JSONException
+import org.json.JSONObject
 import java.util.*
 
 class UserRepository {
@@ -230,7 +238,12 @@ class UserRepository {
             .setValue(currentUser)
     }
 
-    fun sendMessage(text: String, recipientUserUid: String) {
+    fun sendTokenToServer(token: String) {
+        val ref = "users/${auth.uid}/devices/${getDeviceName()}"
+        FirebaseDatabase.getInstance().reference.child(ref).child("token").setValue(token)
+    }
+
+    fun sendMessage(text: String, recipientUserUid: String, context: Context) {
         val refDialogCurrentUser = "messages/${currentUserState.value?.uid}/$recipientUserUid"
         val refDialogRecipientUser = "messages/$recipientUserUid/${currentUserState.value?.uid}"
         val messageKey = database.reference.child(refDialogCurrentUser).push().key
@@ -244,6 +257,24 @@ class UserRepository {
 
         database.reference.child("$refDialogCurrentUser/$messageKey").setValue(message)
         database.reference.child("$refDialogRecipientUser/$messageKey").setValue(message)
+
+        val refRecipientUser = "users/$recipientUserUid"
+        database.reference.child(refRecipientUser).get().addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                val recipientUser = task.result.getValue(User::class.java)!!
+                recipientUser.devices.values.forEach {
+                    if (it.auth == true) {
+                        sendNotification(
+                            to = it.token!!,
+                            title = currentUserState.value?.username!!,
+                            body = text,
+                            imageUrl = currentUserState.value?.photoUri,
+                            context = context
+                        )
+                    }
+                }
+            }
+        }
     }
 
     fun updateMessageStatus(messageKey: String?, recipientUserUid: String) {
@@ -277,4 +308,47 @@ class UserRepository {
         }
     }
 
+    private fun sendNotification(
+        to: String,
+        title: String,
+        body: String,
+        imageUrl: String? = null,
+        context: Context,
+    ) {
+        val serverKey = context.getString(R.string.server_key)
+
+        val payload = JSONObject()
+        try {
+            payload.put("to", to)
+            val notification = JSONObject()
+            notification.put("title", title)
+            notification.put("body", body)
+            if (imageUrl != null) {
+                notification.put("image", imageUrl)
+            }
+            payload.put("notification", notification)
+        } catch (e: JSONException) {
+            e.printStackTrace()
+        }
+
+        val request = object : JsonObjectRequest(
+            Method.POST,
+            "https://fcm.googleapis.com/fcm/send",
+            payload,
+            Response.Listener { response ->
+                Log.d("FCM", "Notification sent")
+            },
+            Response.ErrorListener { error ->
+                Log.e("FCM", "Error sending notification")
+            }
+        ) {
+            override fun getHeaders(): MutableMap<String, String> {
+                val headers = HashMap<String, String>()
+                headers["Content-Type"] = "application/json"
+                headers["Authorization"] = "key=$serverKey"
+                return headers
+            }
+        }
+        Volley.newRequestQueue(context).add(request)
+    }
 }
