@@ -269,6 +269,7 @@ class UserRepository {
                             title = currentUserState.value?.username!!,
                             body = text,
                             imageUrl = currentUserState.value?.photoUri,
+                            userUid = currentUserState.value?.uid!!,
                             context = context
                         )
                     }
@@ -313,6 +314,7 @@ class UserRepository {
         title: String,
         body: String,
         imageUrl: String? = null,
+        userUid: String,
         context: Context,
     ) {
         val serverKey = context.getString(R.string.server_key)
@@ -320,13 +322,14 @@ class UserRepository {
         val payload = JSONObject()
         try {
             payload.put("to", to)
-            val notification = JSONObject()
-            notification.put("title", title)
-            notification.put("body", body)
+            val data = JSONObject()
+            data.put("title", title)
+            data.put("body", body)
             if (imageUrl != null) {
-                notification.put("image", imageUrl)
+                data.put("userImageUrl", imageUrl)
             }
-            payload.put("notification", notification)
+            data.put("userUid", userUid)
+            payload.put("data", data)
         } catch (e: JSONException) {
             e.printStackTrace()
         }

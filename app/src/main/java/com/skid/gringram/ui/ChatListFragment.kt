@@ -17,6 +17,7 @@ import com.skid.gringram.databinding.ChatListBinding
 import com.skid.gringram.ui.adapter.ChatListActionListener
 import com.skid.gringram.ui.adapter.ChatListAdapter
 import com.skid.gringram.ui.model.User
+import com.skid.gringram.utils.customGetSerializable
 import kotlinx.coroutines.launch
 
 class ChatListFragment : Fragment() {
@@ -48,6 +49,13 @@ class ChatListFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        if (arguments?.getBoolean("notification", false) == true) {
+            val bundle =
+                bundleOf("companionUser" to arguments?.customGetSerializable<User>("companionUser"))
+            arguments?.clear()
+            findNavController().navigate(R.id.action_chatListFragment_to_chatFragment, bundle)
+        }
 
         recyclerViewInit()
         setListeners()

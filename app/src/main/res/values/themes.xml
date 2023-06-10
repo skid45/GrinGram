@@ -3,6 +3,7 @@
     <style name="Theme.GrinGram" parent="Theme.MaterialComponents.DayNight.NoActionBar">
 
         <item name="android:windowContentTransitions">true</item>
+        <item name="android:windowSharedElementsUseOverlay">true</item>
 
         <!-- Status bar color. -->
         <item name="android:windowLightStatusBar">true</item>

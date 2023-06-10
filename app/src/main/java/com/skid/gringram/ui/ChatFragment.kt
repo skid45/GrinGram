@@ -56,7 +56,7 @@ class ChatFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        setCompanionUserToToolbar(companionUser!!)
+        setCompanionUserToToolbar(companionUser)
         userViewModel.addCompanionUserForChatStateValueEventListener(companionUser!!.uid!!)
 
         recyclerViewInit()
@@ -107,17 +107,17 @@ class ChatFragment : Fragment() {
         _binding = null
     }
 
-    private fun setCompanionUserToToolbar(companionUser: User) = with(binding) {
-        chatToolbar.title = companionUser.username
-        if (companionUser.online) {
+    private fun setCompanionUserToToolbar(companionUser: User?) = with(binding) {
+        chatToolbar.title = companionUser?.username
+        if (companionUser?.online == true) {
             chatToolbar.setSubtitleTextColor(requireActivity().getColor(R.color.colorPrimary))
             chatToolbar.subtitle = requireActivity().getString(R.string.online)
         } else {
             chatToolbar.setSubtitleTextColor(requireActivity().getColor(android.R.color.darker_gray))
             chatToolbar.subtitle =
-                companionUser.onlineTimestamp.getTimeElapsedFromEpochMilliseconds()
+                companionUser?.onlineTimestamp.getTimeElapsedFromEpochMilliseconds()
         }
-        Picasso.get().load(companionUser.photoUri).fit().centerCrop().into(chatUserImage)
+        Picasso.get().load(companionUser?.photoUri).fit().centerCrop().into(chatUserImage)
     }
 
     private fun recyclerViewInit() = with(binding) {

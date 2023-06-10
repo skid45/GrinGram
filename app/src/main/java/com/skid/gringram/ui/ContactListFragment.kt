@@ -73,7 +73,9 @@ class ContactListFragment : Fragment() {
     }
 
     private fun recyclerViewInit() = with(binding) {
-        contactListRecyclerView.layoutManager = LinearLayoutManager(context)
+        contactListRecyclerView.layoutManager = LinearLayoutManager(context).apply {
+            reverseLayout = true
+        }
         contactListRecyclerView.adapter = contactListAdapter
     }
 

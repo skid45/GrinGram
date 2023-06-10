@@ -60,7 +60,10 @@ class MainActivity : AppCompatActivity() {
             }
         } else {
             if (navController.currentDestination?.id == R.id.signInFragment) {
-                navController.navigate(R.id.action_signInFragment_to_chatListFragment)
+                navController.navigate(
+                    R.id.action_signInFragment_to_chatListFragment,
+                    intent.extras
+                )
             }
 
             askNotificationPermission()
@@ -96,6 +99,12 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun cancelNotifications() {
+        val notificationManager =
+            getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.cancel(NOTIFICATION_ID)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -124,6 +133,7 @@ class MainActivity : AppCompatActivity() {
         if (auth.uid != null) {
             userViewModel.changeUserOnlineStatus(isOnline = true)
         }
+        cancelNotifications()
     }
 
     private fun askNotificationPermission() {
@@ -159,4 +169,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    companion object {
+        const val NOTIFICATION_ID = 1
+    }
 }

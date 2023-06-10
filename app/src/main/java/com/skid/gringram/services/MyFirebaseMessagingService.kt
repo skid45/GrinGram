@@ -1,15 +1,23 @@
 package com.skid.gringram.services
 
 import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.Context
+import android.content.Intent
+import android.media.MediaPlayer
+import android.widget.RemoteViews
 import androidx.core.app.NotificationCompat
-import androidx.core.app.Person
-import androidx.core.graphics.drawable.IconCompat
+import androidx.core.app.NotificationCompat.DecoratedCustomViewStyle
+import androidx.core.os.bundleOf
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ProcessLifecycleOwner
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.skid.gringram.R
+import com.skid.gringram.ui.MainActivity
+import com.skid.gringram.ui.model.Dialog
+import com.skid.gringram.ui.model.User
+import com.skid.gringram.utils.CircleImageTransformation
 import com.squareup.picasso.Picasso
 
 class MyFirebaseMessagingService : FirebaseMessagingService() {
@@ -24,32 +32,67 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
     }
 
     override fun onMessageReceived(message: RemoteMessage) {
-        if (!ProcessLifecycleOwner.get().lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) {
-            val title = message.notification?.title
-            val body = message.notification?.body
-            val imageUrl = message.notification?.imageUrl
+        val userUid = message.data["userUid"]!!
+        val chatNotificationsSharedPref =
+            getSharedPreferences("chatNotifications", Context.MODE_PRIVATE)
+        val chatNotificationForUser =
+            chatNotificationsSharedPref.getString(userUid, Dialog.SOUND_ON)
 
-            val user = Person.Builder()
-                .setName(title)
-                .setIcon(IconCompat.createWithBitmap(Picasso.get().load(imageUrl).get()))
-                .build()
+        if (chatNotificationForUser == Dialog.SOUND_ON) {
+            if (ProcessLifecycleOwner.get().lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) {
+                val mediaPlayer = MediaPlayer.create(this, R.raw.notification_sound)
+                mediaPlayer.start()
 
-            val notification =
-                NotificationCompat.Builder(this, getString(R.string.notification_channel_id))
-                    .setSmallIcon(R.mipmap.ic_launcher_round)
-                    .setStyle(
-                        NotificationCompat.MessagingStyle(user)
-                            .addMessage(body, System.currentTimeMillis(), user)
+            } else {
+                val title = message.data["title"]!!
+                val body = message.data["body"]!!
+                val imageUrl = message.data["userImageUrl"]
+
+                val bundle = bundleOf(
+                    "companionUser" to User(
+                        uid = userUid,
+                        username = title,
+                        photoUri = imageUrl.toString()
+                    ),
+                    "notification" to true
+                )
+
+                val intent = Intent(this, MainActivity::class.java)
+                intent.putExtras(bundle)
+                val pendingIntent: PendingIntent =
+                    PendingIntent.getActivity(
+                        this,
+                        0,
+                        intent,
+                        PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
                     )
-                    .setPriority(NotificationCompat.PRIORITY_HIGH)
 
-            val notificationManager =
-                getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-            notificationManager.notify(NOTIFICATION_ID, notification.build())
+                val notificationLayout =
+                    RemoteViews(packageName, R.layout.custom_notification_layout)
+                notificationLayout.apply {
+                    setImageViewBitmap(
+                        R.id.notification_user_image,
+                        Picasso.get().load(imageUrl).transform(CircleImageTransformation()).get()
+                    )
+                    setTextViewText(R.id.notification_title, title)
+                    setTextViewText(R.id.notification_body, body)
+                    setTextColor(R.id.notification_title, getColor(R.color.colorOnPrimary))
+                    setTextColor(R.id.notification_body, getColor(R.color.colorOnPrimary))
+                }
+
+                val notification =
+                    NotificationCompat.Builder(this, getString(R.string.notification_channel_id))
+                        .setSmallIcon(R.drawable.icon_app_24)
+                        .setStyle(DecoratedCustomViewStyle())
+                        .setCustomContentView(notificationLayout)
+                        .setPriority(NotificationCompat.PRIORITY_HIGH)
+                        .setAutoCancel(true)
+                        .setContentIntent(pendingIntent)
+
+                val notificationManager =
+                    getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+                notificationManager.notify(MainActivity.NOTIFICATION_ID, notification.build())
+            }
         }
-    }
-
-    companion object {
-        const val NOTIFICATION_ID = 1
     }
 }
