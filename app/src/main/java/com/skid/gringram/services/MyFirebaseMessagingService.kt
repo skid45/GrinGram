@@ -18,6 +18,8 @@ import com.skid.gringram.ui.MainActivity
 import com.skid.gringram.ui.model.Dialog
 import com.skid.gringram.ui.model.User
 import com.skid.gringram.utils.CircleImageTransformation
+import com.skid.gringram.utils.Constants.COMPANION_USER
+import com.skid.gringram.utils.Constants.NOTIFICATION
 import com.squareup.picasso.Picasso
 
 class MyFirebaseMessagingService : FirebaseMessagingService() {
@@ -49,12 +51,12 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
                 val imageUrl = message.data["userImageUrl"]
 
                 val bundle = bundleOf(
-                    "companionUser" to User(
+                    COMPANION_USER to User(
                         uid = userUid,
                         username = title,
                         photoUri = imageUrl.toString()
                     ),
-                    "notification" to true
+                    NOTIFICATION to true
                 )
 
                 val intent = Intent(this, MainActivity::class.java)

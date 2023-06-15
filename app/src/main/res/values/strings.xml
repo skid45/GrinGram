@@ -40,5 +40,8 @@
     <string name="photo_transition">photoTransition</string>
     <string name="new_message">New Message</string>
     <string name="notification_channel_id">message_notification</string>
-    <string name="server_key">AAAAz_5YAH4:APA91bEWgMUpYogk-svNo4K97RHY4NwFByCMXW9tViUvPICz5sIiJecbKFKl8kWAMW7NyHtPpfP8Dg2VO8j9-sOP3VH46zjU1uCKBbz0z5-Iz6hYyr9cK8wZKEDOTW_-r-dXnCYd_TZB</string>
+    <string name="server_key">server key</string>
+    <string name="chats_and_contacts">Chats and contacts</string>
+    <string name="search_chats_edit_text_transition">search_chats_edit_text_transition</string>
+    <string name="search_chats_app_bar_layout_transition">search_chats_app_bar_layout_transition</string>
 </resources>

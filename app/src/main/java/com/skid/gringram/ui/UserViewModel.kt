@@ -5,14 +5,14 @@ import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.skid.gringram.ui.model.ChatListItem
-import com.skid.gringram.ui.model.Dialog
-import com.skid.gringram.ui.model.User
+import com.skid.gringram.ui.model.*
 import com.skid.gringram.ui.repositories.UserRepository
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.*
 
 class UserViewModel(
@@ -33,6 +33,10 @@ class UserViewModel(
     val contactsByQuery: StateFlow<List<User>> = userRepository.contactsByQuery.asStateFlow()
     private val _usernameIsValid: MutableStateFlow<Boolean> = MutableStateFlow(true)
     val usernameIsValid: StateFlow<Boolean> = _usernameIsValid.asStateFlow()
+    private val _searchedDatasetForAdapterFlow: MutableStateFlow<List<Item>> =
+        MutableStateFlow(emptyList())
+    val searchedDatasetForAdapterFlow: StateFlow<List<Item>> =
+        _searchedDatasetForAdapterFlow.asStateFlow()
 
     init {
         userRepository.addCurrentUserValueEventListener()
@@ -92,6 +96,7 @@ class UserViewModel(
     override fun onCleared() {
         super.onCleared()
         _chatListItems.value = emptyList()
+        _searchedDatasetForAdapterFlow.value = emptyList()
         userRepository.removeCurrentUserValueEventListener()
     }
 
@@ -113,6 +118,54 @@ class UserViewModel(
         userRepository.sendTokenToServer(token)
     }
 
+    fun searchChats(query: String) {
+        viewModelScope.launch {
+            _searchedDatasetForAdapterFlow.value = emptyList()
+            withContext(Dispatchers.Default) {
+                searchChatsChatsAndContacts(query)
+                searchChatsMessages(query)
+            }
+        }
+    }
+
+    private fun searchChatsChatsAndContacts(query: String) {
+        viewModelScope.launch {
+            _searchedDatasetForAdapterFlow.value = emptyList()
+            val searchedUsers = withContext(Dispatchers.Default) {
+                chatListItems.value.asSequence().filter {
+                    it.companionUser?.username?.startsWith(query, true) == true
+                }.mapNotNull { it.companionUser }.toList()
+            }
+            if (searchedUsers.isNotEmpty()) {
+                _searchedDatasetForAdapterFlow.value = mutableListOf<Item>().apply {
+                    add(HeaderItem("Chats and contacts"))
+                    addAll(searchedUsers)
+                }.toList()
+            }
+        }
+    }
+
+    private fun searchChatsMessages(query: String) {
+        viewModelScope.launch {
+            val searchedMessages = withContext(Dispatchers.Default) {
+                chatListItems.value.asSequence().flatMap { chatListItem ->
+                    chatListItem.dialog?.messages?.asSequence()?.filter { (_, v) ->
+                        v.text.contains(query, true)
+                    }?.mapNotNull { (k, v) ->
+                        chatListItem.companionUser?.let { user -> SearchedMessageItem(k, user, v) }
+                    }.orEmpty()
+                }.toList().reversed()
+            }
+
+            if (searchedMessages.isNotEmpty()) {
+                _searchedDatasetForAdapterFlow.value += mutableListOf<Item>().apply {
+                    add(HeaderItem("Messages"))
+                    addAll(searchedMessages)
+                }.toList()
+            }
+        }
+    }
+
 }
 
 @Suppress("UNCHECKED_CAST")
@@ -120,7 +173,7 @@ class UserViewModelFactory(private val application: GringramApp) : ViewModelProv
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(UserViewModel::class.java)) {
             return UserViewModel(
-                application.userRepository
+                application.userRepository,
             ) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")

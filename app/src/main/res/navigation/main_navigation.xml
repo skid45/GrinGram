@@ -70,6 +70,9 @@
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right" />
+        <action
+            android:id="@+id/action_chatListFragment_to_searchChatsFragment"
+            app:destination="@id/searchChatsFragment" />
     </fragment>
     <fragment
         android:id="@+id/settingsFragment"
@@ -130,6 +133,15 @@
         <action
             android:id="@+id/action_editProfileFragment_to_settingsFragment"
             app:destination="@id/settingsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/searchChatsFragment"
+        android:name="com.skid.gringram.ui.SearchChatsFragment"
+        android:label="search_chats"
+        tools:layout="@layout/search_chats" >
+        <action
+            android:id="@+id/action_searchChatsFragment_to_chatFragment"
+            app:destination="@id/chatFragment" />
     </fragment>
 
 </navigation>

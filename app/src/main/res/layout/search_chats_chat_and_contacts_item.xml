@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/search_chats_chat_and_contacts_item_core_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?selectableItemBackground"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:padding="5dp">
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/search_chats_chat_and_contacts_image"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:background="@drawable/circle_imageview"
+        android:scaleType="centerCrop"
+        tools:src="@drawable/bughsr" />
+
+    <Space
+        android:layout_width="8dp"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/search_chats_chat_and_contacts_username"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Body1.Bold"
+        tools:text="Username" />
+
+</LinearLayout>

@@ -83,8 +83,7 @@ class GalleryBottomSheetDialogFragment : BottomSheetDialogFragment(),
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) Manifest.permission.READ_MEDIA_IMAGES
             else Manifest.permission.READ_EXTERNAL_STORAGE
         if (ContextCompat.checkSelfPermission(
-                requireContext(),
-                permission
+                requireContext(), permission
             ) == PackageManager.PERMISSION_GRANTED
         ) {
             LoaderManager.getInstance(this).initLoader(IMAGE_LOADER_ID, null, this)

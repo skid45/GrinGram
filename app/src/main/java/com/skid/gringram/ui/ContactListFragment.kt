@@ -1,21 +1,26 @@
 package com.skid.gringram.ui
 
+import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.transition.AutoTransition
+import androidx.transition.TransitionManager
 import com.skid.gringram.R
 import com.skid.gringram.databinding.ContactListBinding
 import com.skid.gringram.ui.adapter.ContactListActionListener
 import com.skid.gringram.ui.adapter.ContactListAdapter
 import com.skid.gringram.ui.model.User
+import com.skid.gringram.utils.Constants.COMPANION_USER
 import com.skid.gringram.utils.contactsByQueryCollect
 import com.skid.gringram.utils.userContactsCollect
 import com.skid.gringram.utils.userStateCollect
@@ -32,7 +37,7 @@ class ContactListFragment : Fragment() {
     private val contactListAdapter by lazy {
         ContactListAdapter(object : ContactListActionListener {
             override fun onChatWithSelectedUser(companionUser: User) {
-                val bundle = bundleOf("companionUser" to companionUser)
+                val bundle = bundleOf(COMPANION_USER to companionUser)
                 findNavController().navigate(
                     R.id.action_contactListFragment_to_chatFragment, bundle
                 )
@@ -67,20 +72,32 @@ class ContactListFragment : Fragment() {
         _binding = null
     }
 
-    override fun onPause() {
-        super.onPause()
-        binding.searchViewEditText.setText("")
-    }
-
     private fun recyclerViewInit() = with(binding) {
         contactListRecyclerView.layoutManager = LinearLayoutManager(context).apply {
             reverseLayout = true
+            stackFromEnd = true
         }
         contactListRecyclerView.adapter = contactListAdapter
     }
 
     private fun setListeners() {
         binding.apply {
+            searchViewEditText.setOnFocusChangeListener { view, hasFocus ->
+                TransitionManager.beginDelayedTransition(
+                    contactListCoordinatorLayout,
+                    AutoTransition().apply {
+                        duration = 100
+                    }
+                )
+                if (hasFocus) {
+                    contactListSearchCancelButton.visibility = View.VISIBLE
+                    contactListToolbar.visibility = View.GONE
+                } else {
+                    contactListSearchCancelButton.visibility = View.GONE
+                    contactListToolbar.visibility = View.VISIBLE
+                }
+            }
+
             searchViewEditText.addTextChangedListener(object : TextWatcher {
                 override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) = Unit
 
@@ -99,6 +116,14 @@ class ContactListFragment : Fragment() {
 
                 override fun afterTextChanged(p0: Editable?) = Unit
             })
+
+            contactListSearchCancelButton.setOnClickListener {
+                searchViewEditText.text = null
+                searchViewEditText.clearFocus()
+                val imm =
+                    context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                imm.hideSoftInputFromWindow(searchViewEditText.windowToken, 0)
+            }
         }
     }
 }

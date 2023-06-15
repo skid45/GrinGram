@@ -10,13 +10,16 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.transition.TransitionInflater
 import com.skid.gringram.R
 import com.skid.gringram.databinding.ChatListBinding
 import com.skid.gringram.ui.adapter.ChatListActionListener
 import com.skid.gringram.ui.adapter.ChatListAdapter
 import com.skid.gringram.ui.model.User
+import com.skid.gringram.utils.Constants.COMPANION_USER
 import com.skid.gringram.utils.customGetSerializable
 import kotlinx.coroutines.launch
 
@@ -31,12 +34,22 @@ class ChatListFragment : Fragment() {
     private val chatListAdapter by lazy {
         ChatListAdapter(object : ChatListActionListener {
             override fun onChatWithSelectedUser(companionUser: User) {
-                val bundle = bundleOf("companionUser" to companionUser)
+                val bundle = bundleOf(COMPANION_USER to companionUser)
                 findNavController().navigate(
                     R.id.action_chatListFragment_to_chatFragment, bundle
                 )
             }
         })
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        sharedElementEnterTransition =
+            TransitionInflater.from(requireContext())
+                .inflateTransition(R.transition.shared_element_transition)
+        sharedElementReturnTransition =
+            TransitionInflater.from(requireContext())
+                .inflateTransition(R.transition.shared_element_transition)
     }
 
     override fun onCreateView(
@@ -100,6 +113,19 @@ class ChatListFragment : Fragment() {
                     }
                     else -> false
                 }
+            }
+
+            searchChatList.setOnClickListener {
+                val extras = FragmentNavigatorExtras(
+                    chatListAppBarLayout to chatListAppBarLayout.transitionName,
+                    it to it.transitionName
+                )
+                findNavController().navigate(
+                    R.id.action_chatListFragment_to_searchChatsFragment,
+                    null,
+                    null,
+                    extras
+                )
             }
         }
     }

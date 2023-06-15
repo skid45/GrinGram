@@ -7,30 +7,34 @@
     tools:context=".ui.ChatListFragment">
 
     <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/chat_list_app_bar_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:backgroundTint="@color/colorSurface">
+        android:backgroundTint="@color/colorSurface"
+        android:transitionName="@string/search_chats_app_bar_layout_transition">
 
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/chat_list_toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            app:menu="@menu/chat_list_menu"
             app:title="@string/messages"
-            app:titleCentered="true"
-            app:menu="@menu/chat_list_menu"/>
+            app:titleCentered="true" />
 
         <EditText
             android:id="@+id/search_chat_list"
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:layout_margin="10dp"
+            android:autofillHints="username"
             android:drawableStart="@drawable/baseline_search_24"
             android:drawablePadding="10dp"
+            android:focusable="false"
             android:hint="@string/search_chats"
             android:inputType="text"
             android:maxLines="1"
             android:paddingHorizontal="10dp"
-            android:autofillHints="username" />
+            android:transitionName="@string/search_chats_edit_text_transition" />
 
     </com.google.android.material.appbar.AppBarLayout>
 

@@ -12,7 +12,6 @@ import com.skid.gringram.ui.model.ChatListItem
 import com.skid.gringram.ui.model.User
 import com.skid.gringram.utils.getTimeOrDayOfWeekFromEpochMilliseconds
 import com.squareup.picasso.Picasso
-import kotlinx.datetime.TimeZone
 
 class ChatListAdapter(
     private val actionListener: ChatListActionListener,
@@ -45,7 +44,7 @@ class ChatListAdapter(
                 textMessageChatListItem.text = lastMessage.text
                 timeChatListItem.text = lastMessage
                     .timestamp
-                    .getTimeOrDayOfWeekFromEpochMilliseconds(TimeZone.currentSystemDefault())
+                    .getTimeOrDayOfWeekFromEpochMilliseconds()
                 if (lastMessage.from != chatListItem.companionUser?.uid) {
                     if (lastMessage.viewed == false) {
                         viewedCheckmarkChatListItem.setImageResource(R.drawable.checkmark_icon_primary_color)

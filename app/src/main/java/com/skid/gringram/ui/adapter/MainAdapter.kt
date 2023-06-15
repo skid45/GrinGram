@@ -21,6 +21,7 @@ abstract class MainAdapter<T : Any, VH : RecyclerView.ViewHolder> : RecyclerView
             is ChatAdapter.ViewHolder -> holder.bind(dataset[position] as Message, currentUser)
             is ContactListAdapter.ViewHolder -> holder.bind(dataset[position] as User, currentUser)
             is ChatListAdapter.ViewHolder -> holder.bind(dataset[position] as ChatListItem)
+            is SearchChatsDefaultAdapter.ViewHolder -> holder.bind(dataset[position] as User)
         }
     }
 }

@@ -18,6 +18,7 @@ import com.skid.gringram.databinding.ChatBinding
 import com.skid.gringram.ui.adapter.ChatActionListener
 import com.skid.gringram.ui.adapter.ChatAdapter
 import com.skid.gringram.ui.model.User
+import com.skid.gringram.utils.Constants.MESSAGE_KEY_FOR_SCROLL
 import com.skid.gringram.utils.customGetSerializable
 import com.skid.gringram.utils.getTimeElapsedFromEpochMilliseconds
 import com.skid.gringram.utils.userStateCollect
@@ -95,10 +96,18 @@ class ChatFragment : Fragment() {
                     ) {
                         scrollChatToLastPosition()
                     }
+                    val messageKeyForScroll = arguments?.getString(MESSAGE_KEY_FOR_SCROLL)
+                    if (messageKeyForScroll != null) {
+                        arguments?.putString(MESSAGE_KEY_FOR_SCROLL, null)
+                        val position =
+                            chatAdapter.messageKeys.indexOfFirst { it == messageKeyForScroll }
+                        (binding.chatRecyclerView.layoutManager as LinearLayoutManager)
+                            .scrollToPositionWithOffset(position, 100)
+
+                    }
                 }
             }
         }
-
     }
 
     override fun onDestroyView() {
@@ -121,7 +130,8 @@ class ChatFragment : Fragment() {
     }
 
     private fun recyclerViewInit() = with(binding) {
-        chatRecyclerView.layoutManager = LinearLayoutManager(context).apply { stackFromEnd = true }
+        chatRecyclerView.layoutManager =
+            LinearLayoutManager(context).apply { stackFromEnd = true }
         chatRecyclerView.adapter = chatAdapter
     }
 
@@ -150,7 +160,13 @@ class ChatFragment : Fragment() {
             }
 
             messageEditText.addTextChangedListener(object : TextWatcher {
-                override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+                override fun beforeTextChanged(
+                    p0: CharSequence?,
+                    p1: Int,
+                    p2: Int,
+                    p3: Int,
+                ) {
+                }
 
                 override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
                     if (p0.isNullOrBlank()) sendMessageButton.visibility = View.GONE
@@ -181,8 +197,10 @@ class ChatFragment : Fragment() {
                             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                                 countNewMessages.collect {
                                     if (it > 0) {
-                                        newMessagesIndicatorOnChatFab.visibility = View.VISIBLE
-                                    } else newMessagesIndicatorOnChatFab.visibility = View.GONE
+                                        newMessagesIndicatorOnChatFab.visibility =
+                                            View.VISIBLE
+                                    } else newMessagesIndicatorOnChatFab.visibility =
+                                        View.GONE
                                 }
                             }
                         }

@@ -10,4 +10,7 @@ data class User(
     val online: Boolean = false,
     val onlineTimestamp: Long? = null,
     val devices: Map<String, Device> = emptyMap(),
-) : Serializable
+) : Serializable, Item {
+    override val type: ItemType
+        get() = ItemType.USER_TYPE
+}
