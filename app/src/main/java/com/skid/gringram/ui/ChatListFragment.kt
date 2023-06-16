@@ -20,10 +20,11 @@ import com.skid.gringram.ui.adapter.ChatListActionListener
 import com.skid.gringram.ui.adapter.ChatListAdapter
 import com.skid.gringram.ui.model.User
 import com.skid.gringram.utils.Constants.COMPANION_USER
+import com.skid.gringram.utils.Constants.NOTIFICATION
 import com.skid.gringram.utils.customGetSerializable
 import kotlinx.coroutines.launch
 
-class ChatListFragment : Fragment() {
+class ChatListFragment : Fragment(), OnScreenTouchListener {
     private var _binding: ChatListBinding? = null
     private val binding get() = _binding!!
 
@@ -38,6 +39,10 @@ class ChatListFragment : Fragment() {
                 findNavController().navigate(
                     R.id.action_chatListFragment_to_chatFragment, bundle
                 )
+            }
+
+            override fun deleteDialog(companionUserUid: String, deleteBoth: Boolean) {
+                userViewModel.deleteDialog(companionUserUid, deleteBoth)
             }
         })
     }
@@ -63,9 +68,9 @@ class ChatListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        if (arguments?.getBoolean("notification", false) == true) {
+        if (arguments?.getBoolean(NOTIFICATION, false) == true) {
             val bundle =
-                bundleOf("companionUser" to arguments?.customGetSerializable<User>("companionUser"))
+                bundleOf(COMPANION_USER to arguments?.customGetSerializable<User>(COMPANION_USER))
             arguments?.clear()
             findNavController().navigate(R.id.action_chatListFragment_to_chatFragment, bundle)
         }
@@ -78,9 +83,7 @@ class ChatListFragment : Fragment() {
                 userViewModel.currentUserState.collect {
                     if (it != null) {
                         userViewModel.chatListItems.collect { chatListItems ->
-                            chatListAdapter.dataset = chatListItems.sortedBy { chatListItem ->
-                                chatListItem.dialog?.messages?.values?.last()?.timestamp
-                            }.reversed()
+                            chatListAdapter.dataset = chatListItems
                         }
                     }
                 }
@@ -94,7 +97,9 @@ class ChatListFragment : Fragment() {
     }
 
     private fun recyclerViewInit() = with(binding) {
-        chatListRecyclerView.layoutManager = LinearLayoutManager(context)
+        chatListRecyclerView.layoutManager = LinearLayoutManager(context).apply {
+            reverseLayout = true
+        }
         chatListRecyclerView.adapter = chatListAdapter
     }
 
@@ -129,4 +134,16 @@ class ChatListFragment : Fragment() {
             }
         }
     }
+
+    override fun onScreenTouch() {
+        if (chatListAdapter.listPopupWindowIsShowing) {
+            chatListAdapter.listPopupWindow?.dismiss()
+            chatListAdapter.listPopupWindowIsShowing = false
+        }
+    }
+}
+
+
+interface OnScreenTouchListener {
+    fun onScreenTouch()
 }

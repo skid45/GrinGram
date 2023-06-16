@@ -20,15 +20,17 @@ import com.skid.gringram.ui.model.User
 import com.skid.gringram.utils.CircleImageTransformation
 import com.skid.gringram.utils.Constants.COMPANION_USER
 import com.skid.gringram.utils.Constants.NOTIFICATION
+import com.skid.gringram.utils.Constants.SHARED_PREF_CHAT_NOTIFICATIONS_SOUND
+import com.skid.gringram.utils.Constants.SHARED_PREF_TOKEN
 import com.squareup.picasso.Picasso
 
 class MyFirebaseMessagingService : FirebaseMessagingService() {
 
     override fun onNewToken(token: String) {
         super.onNewToken(token)
-        val sharedPreferences = getSharedPreferences("token", Context.MODE_PRIVATE)
+        val sharedPreferences = getSharedPreferences(SHARED_PREF_TOKEN, Context.MODE_PRIVATE)
         with(sharedPreferences.edit()) {
-            putString("token", token)
+            putString(SHARED_PREF_TOKEN, token)
             apply()
         }
     }
@@ -36,7 +38,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
     override fun onMessageReceived(message: RemoteMessage) {
         val userUid = message.data["userUid"]!!
         val chatNotificationsSharedPref =
-            getSharedPreferences("chatNotifications", Context.MODE_PRIVATE)
+            getSharedPreferences(SHARED_PREF_CHAT_NOTIFICATIONS_SOUND, Context.MODE_PRIVATE)
         val chatNotificationForUser =
             chatNotificationsSharedPref.getString(userUid, Dialog.SOUND_ON)
 

@@ -152,14 +152,18 @@ class ChatAdapter(
         val customAlertDialogLayoutBinding =
             CustomAlertDialogLayoutBinding.inflate(LayoutInflater.from(context))
         val checkBoxText = "Also delete for ${companionUser?.username}"
-        customAlertDialogLayoutBinding.deleteMessageCheckbox.text = checkBoxText
+        customAlertDialogLayoutBinding.customAlertDialogTitle.text =
+            context.getString(R.string.delete_message)
+        customAlertDialogLayoutBinding.customAlertDialogAlertMessage.text =
+            context.getString(R.string.are_you_sure_you_want_to_delete_this_message)
+        customAlertDialogLayoutBinding.customAlertDialogCheckbox.text = checkBoxText
         val alertDialogBuilder = MaterialAlertDialogBuilder(context)
         alertDialogBuilder
             .setView(customAlertDialogLayoutBinding.root)
             .setPositiveButton("Delete") { _, _ ->
                 actionListener.deleteMessage(
                     messageKeys[position],
-                    customAlertDialogLayoutBinding.deleteMessageCheckbox.isChecked
+                    customAlertDialogLayoutBinding.customAlertDialogCheckbox.isChecked
                 )
             }
             .setNegativeButton("Cancel") { _, _ -> }

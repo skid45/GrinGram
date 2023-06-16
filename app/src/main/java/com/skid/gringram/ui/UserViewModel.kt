@@ -44,13 +44,15 @@ class UserViewModel(
 
     fun getChatListItem() {
         viewModelScope.launch {
-            usersForDialogs.collect {
-                if (it.size == currentUserDialogs.value.size) {
-                    _chatListItems.value = it.map { user ->
-                        ChatListItem(
-                            user,
-                            currentUserDialogs.value
-                                .first { dialog -> dialog.companionUserUid == user.uid })
+            usersForDialogs.collect { users ->
+                if (users.isNotEmpty()) {
+                    if (users.size == currentUserDialogs.value.size) {
+                        _chatListItems.value = users.map { user ->
+                            ChatListItem(
+                                user,
+                                currentUserDialogs.value
+                                    .first { dialog -> dialog.companionUserUid == user.uid })
+                        }.sortedBy { it.dialog?.messages?.values?.last()?.timestamp }
                     }
                 }
             }
@@ -102,6 +104,10 @@ class UserViewModel(
 
     fun deleteMessage(messageKey: String, deleteBoth: Boolean, recipientUserUid: String) {
         userRepository.deleteMessage(messageKey, deleteBoth, recipientUserUid)
+    }
+
+    fun deleteDialog(companionUserUid: String, deleteBoth: Boolean) {
+        userRepository.deleteDialog(companionUserUid, deleteBoth)
     }
 
     fun validateUsername(username: String) {

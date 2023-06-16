@@ -81,6 +81,7 @@ class UserRepository {
                 dialogs.add(dialog)
             }
             currentUserDialogs.value = dialogs.toList()
+            usersForDialogs.value = emptyList()
             loadUsersForDialogs(currentUserDialogs.value)
         }
 
@@ -306,6 +307,16 @@ class UserRepository {
             val refMessageRecipientUser =
                 "messages/$recipientUserUid/${currentUserState.value?.uid}/$messageKey"
             database.reference.child(refMessageRecipientUser).removeValue()
+        }
+    }
+
+    fun deleteDialog(companionUserUid: String, deleteBoth: Boolean) {
+        val refDialogCurrentUser = "messages/${currentUserState.value?.uid}/$companionUserUid"
+        database.reference.child(refDialogCurrentUser).removeValue()
+
+        if (deleteBoth) {
+            val refDialogCompanionUser = "messages/$companionUserUid/${currentUserState.value?.uid}"
+            database.reference.child(refDialogCompanionUser).removeValue()
         }
     }
 

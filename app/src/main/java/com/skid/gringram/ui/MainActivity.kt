@@ -8,6 +8,7 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
+import android.view.MotionEvent
 import android.view.View
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
@@ -22,6 +23,7 @@ import androidx.navigation.ui.setupWithNavController
 import com.google.firebase.auth.FirebaseAuth
 import com.skid.gringram.R
 import com.skid.gringram.databinding.ActivityMainBinding
+import com.skid.gringram.utils.Constants.SHARED_PREF_TOKEN
 import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
@@ -68,8 +70,8 @@ class MainActivity : AppCompatActivity() {
 
             askNotificationPermission()
 
-            val sharedPref = getSharedPreferences("token", Context.MODE_PRIVATE)
-            val token = sharedPref.getString("token", "")
+            val sharedPref = getSharedPreferences(SHARED_PREF_TOKEN, Context.MODE_PRIVATE)
+            val token = sharedPref.getString(SHARED_PREF_TOKEN, "")
             if (token != null) {
                 userViewModel.sendTokenToServer(token)
             }
@@ -128,6 +130,18 @@ class MainActivity : AppCompatActivity() {
             userViewModel.changeUserOnlineStatus(isOnline = true)
         }
         cancelNotifications()
+    }
+
+    override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
+        if (ev.action == MotionEvent.ACTION_DOWN) {
+            val navHostFragment =
+                supportFragmentManager.findFragmentById(R.id.main_navigation_host) as NavHostFragment
+            val chatListFragment =
+                navHostFragment.childFragmentManager.fragments.firstOrNull() as? OnScreenTouchListener
+            chatListFragment?.onScreenTouch()
+        }
+
+        return super.dispatchTouchEvent(ev)
     }
 
     private fun askNotificationPermission() {

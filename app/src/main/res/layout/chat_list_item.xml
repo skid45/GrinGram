@@ -62,17 +62,20 @@
                 tools:text="Name" />
 
             <ImageView
+                android:id="@+id/sound_off_chat_list_item"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:contentDescription="@string/sound_off"
+                android:src="@drawable/sound_off"
+                android:visibility="gone"
+                tools:visibility="visible" />
+
+            <ImageView
                 android:id="@+id/viewed_checkmark_chat_list_item"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:contentDescription="@string/checkmark"
-                android:src="@drawable/checkmark_icon_primary_color"
-                android:visibility="gone"
-                tools:visibility="visible" />
-
-            <Space
-                android:layout_width="2dp"
-                android:layout_height="match_parent" />
+                android:src="@drawable/checkmark_icon_primary_color" />
 
             <TextView
                 android:id="@+id/time_chat_list_item"
@@ -82,6 +85,7 @@
                 tools:text="14:14" />
 
         </LinearLayout>
+
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -102,7 +106,9 @@
 
 
             <com.google.android.material.card.MaterialCardView
+                android:id="@+id/new_messages_indicator_card_view"
                 style="@style/MaterialCardStyle.NewMessageIndicator"
+                android:backgroundTint="@color/colorOnSurfaceVariant"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical|end">
