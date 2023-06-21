@@ -8,6 +8,7 @@ import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
+import com.google.firebase.database.ktx.getValue
 import com.google.firebase.storage.FirebaseStorage
 import com.skid.gringram.R
 import com.skid.gringram.ui.model.Dialog
@@ -73,11 +74,16 @@ class UserRepository {
             for (item in snapshot.children) {
                 val companionUserUid = item.key
                 val messages = mutableMapOf<String, Message>()
+                var mute = Dialog.SOUND_ON
                 for (messageItem in item.children) {
+                    if (messageItem.key == "mute") {
+                        mute = messageItem.getValue<Boolean>() ?: mute
+                        continue
+                    }
                     val message = messageItem.getValue(Message::class.java)!!
                     messages[messageItem.key.toString()] = message
                 }
-                val dialog = Dialog(companionUserUid, messages)
+                val dialog = Dialog(companionUserUid, mute, messages)
                 dialogs.add(dialog)
             }
             currentUserDialogs.value = dialogs.toList()
@@ -143,6 +149,12 @@ class UserRepository {
     fun removeCurrentUserValueEventListener() {
         database.getReference("users").child(auth.uid.toString())
             .removeEventListener(currentUserValueEventListener)
+        database.getReference("messages").child("${currentUserState.value?.uid}")
+            .removeEventListener(currentUserDialogsValueEventListener)
+        currentUserDialogs.value.forEach {
+            database.getReference("users").orderByKey().equalTo(it.companionUserUid)
+                .removeEventListener(usersForDialogsValueEventListener)
+        }
         currentUserState.value = null
         currentUserDialogs.value = emptyList()
         usersForDialogs.value = emptyList()
@@ -263,20 +275,33 @@ class UserRepository {
         database.reference.child(refRecipientUser).get().addOnCompleteListener { task ->
             if (task.isSuccessful) {
                 val recipientUser = task.result.getValue(User::class.java)!!
-                recipientUser.devices.values.forEach {
-                    if (it.auth == true) {
-                        sendNotification(
-                            to = it.token!!,
-                            title = currentUserState.value?.username!!,
-                            body = text,
-                            imageUrl = currentUserState.value?.photoUri,
-                            userUid = currentUserState.value?.uid!!,
-                            context = context
-                        )
+                database.reference.child(refDialogRecipientUser).child("mute").get()
+                    .addOnCompleteListener { muteTask ->
+                        if (muteTask.isSuccessful) {
+                            val mute = muteTask.result.getValue<Boolean>() ?: Dialog.SOUND_ON
+
+                            recipientUser.devices.values.forEach {
+                                if (it.auth == true) {
+                                    sendNotification(
+                                        to = it.token!!,
+                                        title = currentUserState.value?.username!!,
+                                        body = text,
+                                        imageUrl = currentUserState.value?.photoUri,
+                                        userUid = currentUserState.value?.uid!!,
+                                        mute = mute,
+                                        context = context
+                                    )
+                                }
+                            }
+                        }
                     }
-                }
             }
         }
+    }
+
+    fun updateDialogMute(mute: Boolean, recipientUserUid: String) {
+        val ref = "messages/${currentUserState.value?.uid}/$recipientUserUid/mute"
+        database.reference.child(ref).setValue(mute)
     }
 
     fun updateMessageStatus(messageKey: String?, recipientUserUid: String) {
@@ -326,6 +351,7 @@ class UserRepository {
         body: String,
         imageUrl: String? = null,
         userUid: String,
+        mute: Boolean,
         context: Context,
     ) {
         val serverKey = context.getString(R.string.server_key)
@@ -340,6 +366,7 @@ class UserRepository {
                 data.put("userImageUrl", imageUrl)
             }
             data.put("userUid", userUid)
+            data.put("mute", mute)
             payload.put("data", data)
         } catch (e: JSONException) {
             e.printStackTrace()

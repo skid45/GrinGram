@@ -20,7 +20,6 @@ import com.skid.gringram.ui.model.User
 import com.skid.gringram.utils.CircleImageTransformation
 import com.skid.gringram.utils.Constants.COMPANION_USER
 import com.skid.gringram.utils.Constants.NOTIFICATION
-import com.skid.gringram.utils.Constants.SHARED_PREF_CHAT_NOTIFICATIONS_SOUND
 import com.skid.gringram.utils.Constants.SHARED_PREF_TOKEN
 import com.squareup.picasso.Picasso
 
@@ -36,13 +35,9 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
     }
 
     override fun onMessageReceived(message: RemoteMessage) {
-        val userUid = message.data["userUid"]!!
-        val chatNotificationsSharedPref =
-            getSharedPreferences(SHARED_PREF_CHAT_NOTIFICATIONS_SOUND, Context.MODE_PRIVATE)
-        val chatNotificationForUser =
-            chatNotificationsSharedPref.getString(userUid, Dialog.SOUND_ON)
+        val mute = message.data["mute"]?.toBoolean() ?: Dialog.SOUND_ON
 
-        if (chatNotificationForUser == Dialog.SOUND_ON) {
+        if (mute == Dialog.SOUND_ON) {
             if (ProcessLifecycleOwner.get().lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) {
                 val mediaPlayer = MediaPlayer.create(this, R.raw.notification_sound)
                 mediaPlayer.start()
@@ -51,6 +46,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
                 val title = message.data["title"]!!
                 val body = message.data["body"]!!
                 val imageUrl = message.data["userImageUrl"]
+                val userUid = message.data["userUid"]!!
 
                 val bundle = bundleOf(
                     COMPANION_USER to User(

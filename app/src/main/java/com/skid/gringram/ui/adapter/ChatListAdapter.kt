@@ -17,7 +17,6 @@ import com.skid.gringram.databinding.CustomAlertDialogLayoutBinding
 import com.skid.gringram.ui.model.ChatListItem
 import com.skid.gringram.ui.model.Dialog
 import com.skid.gringram.ui.model.User
-import com.skid.gringram.utils.Constants
 import com.skid.gringram.utils.getTimeOrDayOfWeekFromEpochMilliseconds
 import com.squareup.picasso.Picasso
 
@@ -79,17 +78,7 @@ class ChatListAdapter(
                 newMessagesIndicator.visibility = View.VISIBLE
             }
 
-            val chatNotificationsSharedPref = context.getSharedPreferences(
-                Constants.SHARED_PREF_CHAT_NOTIFICATIONS_SOUND,
-                Context.MODE_PRIVATE
-            )
-            val chatNotificationForUser =
-                chatNotificationsSharedPref.getString(
-                    chatListItem.companionUser?.uid,
-                    Dialog.SOUND_ON
-                )
-
-            if (chatNotificationForUser == Dialog.SOUND_ON) {
+            if (chatListItem.dialog?.mute == Dialog.SOUND_ON) {
                 soundOffChatListItem.visibility = View.GONE
                 newMessagesIndicatorCardView.backgroundTintList =
                     ColorStateList.valueOf(context.getColor(R.color.colorPrimary))
@@ -130,33 +119,29 @@ class ChatListAdapter(
             val chatListItem = dataset[chatAdapterPosition]
 
             listPopupWindow =
-                createListPopupWindow(context, chatListItem.companionUser?.uid.toString())
+                createListPopupWindow(context, chatListItem.dialog?.mute!!)
 
             listPopupWindow?.anchorView = holder.binding.chatListItemCoreLayout
             listPopupWindow?.horizontalOffset = 150
 
             listPopupWindow?.setOnItemClickListener { adapterView, _, position, _ ->
                 val popupItem = adapterView.getItemAtPosition(position) as Map<*, *>
-                val chatNotificationsSharedPref = context.getSharedPreferences(
-                    Constants.SHARED_PREF_CHAT_NOTIFICATIONS_SOUND,
-                    Context.MODE_PRIVATE
-                )
                 when (popupItem["text"] as String) {
                     context.getString(R.string.mute) -> {
-                        with(chatNotificationsSharedPref.edit()) {
-                            putString(chatListItem.companionUser?.uid, Dialog.SOUND_OFF)
-                            apply()
-                        }
+                        actionListener.updateDialogMute(
+                            Dialog.SOUND_OFF,
+                            chatListItem.companionUser?.uid.toString()
+                        )
                         notifyItemChanged(chatAdapterPosition)
                         listPopupWindow?.dismiss()
                         listPopupWindowIsShowing = false
                     }
 
                     context.getString(R.string.unmute) -> {
-                        with(chatNotificationsSharedPref.edit()) {
-                            putString(chatListItem.companionUser?.uid, Dialog.SOUND_ON)
-                            apply()
-                        }
+                        actionListener.updateDialogMute(
+                            Dialog.SOUND_ON,
+                            chatListItem.companionUser?.uid.toString()
+                        )
                         notifyItemChanged(chatAdapterPosition)
                         listPopupWindow?.dismiss()
                         listPopupWindowIsShowing = false
@@ -174,17 +159,11 @@ class ChatListAdapter(
         listPopupWindowIsShowing = true
     }
 
-    private fun createListPopupWindow(context: Context, userUid: String): ListPopupWindow {
-        val chatNotificationsSharedPref = context.getSharedPreferences(
-            Constants.SHARED_PREF_CHAT_NOTIFICATIONS_SOUND,
-            Context.MODE_PRIVATE
-        )
+    private fun createListPopupWindow(context: Context, mute: Boolean): ListPopupWindow {
 
-        val chatNotificationForUser =
-            chatNotificationsSharedPref.getString(userUid, Dialog.SOUND_ON)
         val notificationsStateIcon: Int
         val notificationsStateText: String
-        if (chatNotificationForUser == Dialog.SOUND_ON) {
+        if (mute == Dialog.SOUND_ON) {
             notificationsStateIcon = R.drawable.baseline_notifications_off_24
             notificationsStateText = context.getString(R.string.mute)
         } else {
@@ -246,4 +225,6 @@ interface ChatListActionListener {
     fun onChatWithSelectedUser(companionUser: User)
 
     fun deleteDialog(companionUserUid: String, deleteBoth: Boolean)
+
+    fun updateDialogMute(mute: Boolean, companionUserUid: String)
 }

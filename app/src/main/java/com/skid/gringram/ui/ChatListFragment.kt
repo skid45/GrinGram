@@ -44,6 +44,10 @@ class ChatListFragment : Fragment(), OnScreenTouchListener {
             override fun deleteDialog(companionUserUid: String, deleteBoth: Boolean) {
                 userViewModel.deleteDialog(companionUserUid, deleteBoth)
             }
+
+            override fun updateDialogMute(mute: Boolean, companionUserUid: String) {
+                userViewModel.updateDialogMute(mute, companionUserUid)
+            }
         })
     }
 
