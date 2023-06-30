@@ -88,8 +88,8 @@ class UserViewModel(
         userRepository.removeContact(uid)
     }
 
-    fun sendMessage(text: String, recipientUserUid: String, context: Context) {
-        userRepository.sendMessage(text, recipientUserUid, context)
+    fun sendMessage(text: String, media: List<Uri> = emptyList(), recipientUserUid: String, context: Context) {
+        userRepository.sendMessage(text, media, recipientUserUid, context)
     }
 
     fun updateMessageStatus(messageKey: String?, recipientUserUid: String) {

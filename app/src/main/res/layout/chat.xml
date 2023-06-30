@@ -95,8 +95,18 @@
             android:background="@color/colorSurface"
             android:gravity="center"
             android:orientation="horizontal"
-            android:padding="10dp"
+            android:padding="7dp"
             app:layout_constraintBottom_toBottomOf="parent">
+
+            <ImageView
+                android:id="@+id/chat_attach_files"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:background="?selectableItemBackground"
+                android:contentDescription="@string/attach"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
+                android:src="@drawable/attache_paper_clip" />
 
             <EditText
                 android:id="@+id/message_edit_text"

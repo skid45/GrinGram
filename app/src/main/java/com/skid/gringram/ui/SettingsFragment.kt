@@ -72,7 +72,8 @@ class SettingsFragment : Fragment() {
             }
 
             changePhoto.setOnClickListener {
-                val galleryBottomSheetDialogFragment = GalleryBottomSheetDialogFragment()
+                val galleryBottomSheetDialogFragment =
+                    GalleryBottomSheetDialogFragment(canAttach = false)
                 galleryBottomSheetDialogFragment.show(
                     requireActivity().supportFragmentManager,
                     "GalleryBottomSheetDialogFragment"

@@ -149,23 +149,27 @@ class ChatFragment : Fragment() {
                 requireActivity().onBackPressedDispatcher.onBackPressed()
             }
 
+            chatAttachFiles.setOnClickListener {
+                val galleryBottomSheetDialogFragment =
+                    GalleryBottomSheetDialogFragment(canAttach = true)
+                galleryBottomSheetDialogFragment.show(
+                    requireActivity().supportFragmentManager,
+                    "GalleryBottomSheetDialogFragment"
+                )
+            }
+
             sendMessageButton.setOnClickListener {
                 val messageText = messageEditText.text.toString().trim()
                 userViewModel.sendMessage(
-                    messageText,
-                    companionUser!!.uid!!,
-                    requireContext()
+                    text = messageText,
+                    recipientUserUid = companionUser!!.uid!!,
+                    context = requireContext()
                 )
                 messageEditText.text.clear()
             }
 
             messageEditText.addTextChangedListener(object : TextWatcher {
-                override fun beforeTextChanged(
-                    p0: CharSequence?,
-                    p1: Int,
-                    p2: Int,
-                    p3: Int,
-                ) {
+                override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
                 }
 
                 override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {

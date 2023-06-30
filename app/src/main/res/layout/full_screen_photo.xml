@@ -1,46 +1,73 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     tools:context=".ui.FullScreenPhotoFragment">
 
     <com.github.chrisbanes.photoview.PhotoView
         android:id="@+id/fullscreen_photo_photo_view"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        android:padding="5dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         tools:srcCompat="@drawable/bughsr" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/fullscreen_photo_select_image_text_view"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="20dp"
+        android:background="@drawable/circle_border_background"
+        android:gravity="center"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="10"
+        tools:visibility="visible" />
+
+    <ImageButton
+        android:id="@+id/fullscreen_photo_cancel_button"
+        style="@style/ImageButton"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="5dp"
+        android:layout_marginBottom="5dp"
+        android:contentDescription="@string/cancel"
+        android:src="@drawable/cancel_icon"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <EditText
+        android:id="@+id/fullscreen_photo_attach_file_message_edit_text"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="5dp">
+        android:layout_marginHorizontal="5dp"
+        android:layout_marginBottom="5dp"
+        android:hint="@string/message"
+        android:importantForAutofill="no"
+        android:inputType="textMultiLine"
+        android:minHeight="50dp"
+        android:paddingHorizontal="15dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/fullscreen_photo_send_photo_button"
+        app:layout_constraintStart_toEndOf="@id/fullscreen_photo_cancel_button"
+        tools:visibility="visible" />
 
-        <ImageButton
-            android:id="@+id/fullscreen_photo_cancel_button"
-            style="@style/ImageButton"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:contentDescription="@string/cancel"
-            android:src="@drawable/cancel_icon" />
+    <ImageButton
+        android:id="@+id/fullscreen_photo_send_photo_button"
+        style="@style/ImageButton.SendMessageButton"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginBottom="5dp"
+        android:contentDescription="@string/send_image"
+        android:src="@drawable/checkmark_icon_black_color"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
-        <Space
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1" />
-
-        <ImageButton
-            android:id="@+id/fullscreen_photo_send_photo_button"
-            style="@style/ImageButton.SendMessageButton"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:contentDescription="@string/send_image"
-            android:src="@drawable/checkmark_icon_black_color" />
-
-    </LinearLayout>
-
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -2,6 +2,7 @@
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/gallery_bottom_sheet_coordinator_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.GalleryBottomSheetDialogFragment">
@@ -48,7 +49,56 @@
         android:id="@+id/gallery_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginBottom="70dp"
         android:background="@color/colorBackground"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        tools:itemCount="9"
+        tools:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+        tools:listitem="@layout/gallery_item"
+        tools:spanCount="3" />
+
+
+    <com.google.android.material.bottomappbar.BottomAppBar
+        android:id="@+id/attach_file_input_message_layout"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:layout_gravity="bottom"
+        android:gravity="center"
+        android:visibility="gone"
+        app:contentInsetStart="0dp"
+        tools:visibility="visible">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:animateLayoutChanges="true"
+            android:background="@color/colorSurface"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:padding="10dp"
+            app:layout_constraintBottom_toBottomOf="parent">
+
+            <EditText
+                android:id="@+id/attach_file_message_edit_text"
+                style="@style/EditTextStyle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="@string/message"
+                android:importantForAutofill="no"
+                android:inputType="textMultiLine"
+                android:minHeight="50dp"
+                android:paddingHorizontal="15dp" />
+
+            <ImageButton
+                android:id="@+id/attach_file_send_message_button"
+                style="@style/ImageButton.SendMessageButton"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_marginHorizontal="10dp"
+                android:contentDescription="@string/send"
+                android:src="@drawable/baseline_arrow_upward_24" />
+        </LinearLayout>
+    </com.google.android.material.bottomappbar.BottomAppBar>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

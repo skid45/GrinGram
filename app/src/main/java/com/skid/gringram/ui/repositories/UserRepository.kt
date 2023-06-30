@@ -15,7 +15,10 @@ import com.skid.gringram.ui.model.Dialog
 import com.skid.gringram.ui.model.Message
 import com.skid.gringram.ui.model.User
 import com.skid.gringram.utils.getDeviceName
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import org.json.JSONException
 import org.json.JSONObject
@@ -75,15 +78,24 @@ class UserRepository {
                 val companionUserUid = item.key
                 val messages = mutableMapOf<String, Message>()
                 var mute = Dialog.SOUND_ON
+                val media = mutableListOf<String>()
                 for (messageItem in item.children) {
                     if (messageItem.key == "mute") {
                         mute = messageItem.getValue<Boolean>() ?: mute
+                        continue
+                    } else if (messageItem.key == "media") {
+                        for (mediaItem in messageItem.children) {
+                            val mediaUri = mediaItem.getValue<String>()
+                            if (mediaUri != null) {
+                                media.add(mediaUri)
+                            }
+                        }
                         continue
                     }
                     val message = messageItem.getValue(Message::class.java)!!
                     messages[messageItem.key.toString()] = message
                 }
-                val dialog = Dialog(companionUserUid, mute, messages)
+                val dialog = Dialog(companionUserUid, mute, media, messages)
                 dialogs.add(dialog)
             }
             currentUserDialogs.value = dialogs.toList()
@@ -256,47 +268,67 @@ class UserRepository {
         FirebaseDatabase.getInstance().reference.child(ref).child("token").setValue(token)
     }
 
-    fun sendMessage(text: String, recipientUserUid: String, context: Context) {
+    fun sendMessage(text: String, media: List<Uri>, recipientUserUid: String, context: Context) {
         val refDialogCurrentUser = "messages/${currentUserState.value?.uid}/$recipientUserUid"
         val refDialogRecipientUser = "messages/$recipientUserUid/${currentUserState.value?.uid}"
         val messageKey = database.reference.child(refDialogCurrentUser).push().key
 
-        val message = mapOf(
-            "text" to text,
-            "from" to currentUserState.value?.uid.toString(),
-            "timestamp" to ServerValue.TIMESTAMP,
-            "viewed" to false
-        )
+        CoroutineScope(Dispatchers.Default).launch {
+            val message = mapOf(
+                "text" to text,
+                "media" to media.map { uploadFileFromMessageToStorage(it, recipientUserUid) },
+                "from" to currentUserState.value?.uid.toString(),
+                "timestamp" to ServerValue.TIMESTAMP,
+                "viewed" to false
+            )
 
-        database.reference.child("$refDialogCurrentUser/$messageKey").setValue(message)
-        database.reference.child("$refDialogRecipientUser/$messageKey").setValue(message)
+            database.reference.child("$refDialogCurrentUser/$messageKey").setValue(message)
+            database.reference.child("$refDialogRecipientUser/$messageKey").setValue(message)
 
-        val refRecipientUser = "users/$recipientUserUid"
-        database.reference.child(refRecipientUser).get().addOnCompleteListener { task ->
-            if (task.isSuccessful) {
-                val recipientUser = task.result.getValue(User::class.java)!!
-                database.reference.child(refDialogRecipientUser).child("mute").get()
-                    .addOnCompleteListener { muteTask ->
-                        if (muteTask.isSuccessful) {
-                            val mute = muteTask.result.getValue<Boolean>() ?: Dialog.SOUND_ON
+            val refRecipientUser = "users/$recipientUserUid"
+            database.reference.child(refRecipientUser).get().addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    val recipientUser = task.result.getValue(User::class.java)!!
+                    database.reference.child(refDialogRecipientUser).child("mute").get()
+                        .addOnCompleteListener { muteTask ->
+                            if (muteTask.isSuccessful) {
+                                val mute = muteTask.result.getValue<Boolean>() ?: Dialog.SOUND_ON
 
-                            recipientUser.devices.values.forEach {
-                                if (it.auth == true) {
-                                    sendNotification(
-                                        to = it.token!!,
-                                        title = currentUserState.value?.username!!,
-                                        body = text,
-                                        imageUrl = currentUserState.value?.photoUri,
-                                        userUid = currentUserState.value?.uid!!,
-                                        mute = mute,
-                                        context = context
-                                    )
+                                recipientUser.devices.values.forEach {
+                                    if (it.auth == true) {
+                                        sendNotification(
+                                            to = it.token!!,
+                                            title = currentUserState.value?.username!!,
+                                            body = text,
+                                            imageUrl = currentUserState.value?.photoUri,
+                                            userUid = currentUserState.value?.uid!!,
+                                            mute = mute,
+                                            context = context
+                                        )
+                                    }
                                 }
                             }
                         }
-                    }
+                }
             }
         }
+    }
+
+    private suspend fun uploadFileFromMessageToStorage(uri: Uri, recipientUserUid: String): String {
+        val fileUidInStorage = UUID.randomUUID().toString()
+        val refCurrentUserDialog = "messages/${currentUserState.value?.uid}/$recipientUserUid"
+        val refRecipientUserDialog = "messages/$recipientUserUid/${currentUserState.value?.uid}"
+
+        val task = storage.child("messages").child(fileUidInStorage).putFile(uri)
+        task.await()
+        val downloadUriTask = storage.child("messages").child(fileUidInStorage).downloadUrl
+        downloadUriTask.await()
+
+        database.reference.child(refCurrentUserDialog).child("media").child(fileUidInStorage)
+            .setValue(downloadUriTask.result.toString())
+        database.reference.child(refRecipientUserDialog).child("media").child(fileUidInStorage)
+            .setValue(downloadUriTask.result.toString())
+        return downloadUriTask.result.toString()
     }
 
     fun updateDialogMute(mute: Boolean, recipientUserUid: String) {

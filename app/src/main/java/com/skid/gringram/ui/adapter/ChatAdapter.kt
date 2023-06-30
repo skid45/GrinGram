@@ -40,7 +40,8 @@ class ChatAdapter(
     private var listPopupWindow: ListPopupWindow? = null
     private var listPopupWindowIsShowing: Boolean = false
 
-    class ViewHolder(val binding: MessageBinding) : RecyclerView.ViewHolder(binding.root) {
+    class ViewHolder(val binding: MessageBinding, private val context: Context) :
+        RecyclerView.ViewHolder(binding.root) {
 
         fun bind(message: Message, currentUser: User?) = with(binding) {
 
@@ -66,8 +67,40 @@ class ChatAdapter(
                     viewedCheckmark.visibility = View.GONE
                 }
 
-                messageText.text = message.text
+                if (message.text.isBlank()) messageText.visibility = View.GONE
+                else {
+                    messageText.text = message.text
+                    messageText.visibility = View.VISIBLE
+                }
+
                 timestamp.text = message.timestamp.getTimeFromEpochMilliseconds()
+
+                if (message.media.isEmpty()) {
+                    messageMedia.visibility = View.GONE
+                } else {
+                    messageMediaRow1.removeAllViews()
+                    messageMediaRow2.removeAllViews()
+                    messageMediaRow3.removeAllViews()
+
+                    val adapter = MessageMediaAdapter(context, message.media)
+                    for (i in 0 until adapter.count) {
+                        when {
+                            i < 3 -> {
+                                val view: View = adapter.getView(i, null, messageMediaRow1)
+                                messageMediaRow1.addView(view)
+                            }
+                            i < 6 -> {
+                                val view: View = adapter.getView(i, null, messageMediaRow2)
+                                messageMediaRow2.addView(view)
+                            }
+                            else -> {
+                                val view: View = adapter.getView(i, null, messageMediaRow3)
+                                messageMediaRow3.addView(view)
+                            }
+                        }
+                    }
+                    messageMedia.visibility = View.VISIBLE
+                }
             }
         }
     }
@@ -76,7 +109,7 @@ class ChatAdapter(
         val view = LayoutInflater.from(parent.context)
         val binding = MessageBinding.inflate(view, parent, false)
 
-        val holder = ViewHolder(binding)
+        val holder = ViewHolder(binding, parent.context)
         holder.binding.coreMessageLayout.setOnClickListener {
             if (listPopupWindowIsShowing) {
                 listPopupWindow?.dismiss()

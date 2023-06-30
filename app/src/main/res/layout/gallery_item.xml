@@ -18,4 +18,19 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:src="@drawable/bughsr" />
 
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/gallery_item_select_image_text_view"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="10dp"
+        android:background="@drawable/circle_border_background"
+        android:gravity="center"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Body1.Bold"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="10"
+        tools:visibility="visible" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
