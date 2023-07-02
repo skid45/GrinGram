@@ -219,11 +219,10 @@ class UserRepository {
             if (putTask.isSuccessful) {
                 ref.downloadUrl.addOnCompleteListener {
                     if (it.isSuccessful) {
-                        val currentUser = currentUserState.value
-                        val newUser =
-                            User(currentUser?.uid, currentUser?.username, it.result.toString())
-                        database.reference.child("users").child(currentUser?.uid.toString())
-                            .setValue(newUser)
+                        database.reference.child("users")
+                            .child(currentUserState.value?.uid.toString())
+                            .child("photoUri")
+                            .setValue(it.result.toString())
                     }
                 }
             }

@@ -20,6 +20,7 @@ class FullScreenPhotoFragment(
 
     private val photoUri by lazy { arguments?.getString("photoUri") }
     private val position by lazy { arguments?.getInt("position") }
+    private val text by lazy { arguments?.getString("text") }
 
     private val userViewModel: UserViewModel by activityViewModels {
         UserViewModelFactory(activity?.application as GringramApp)
@@ -42,6 +43,7 @@ class FullScreenPhotoFragment(
         binding.apply {
             val uri = Uri.parse(photoUri)
             if (canAttach) {
+                fullscreenPhotoAttachFileMessageEditText.setText(text)
                 fullscreenPhotoAttachFileMessageEditText.visibility = View.VISIBLE
                 fullscreenPhotoSelectImageTextView.visibility = View.VISIBLE
                 if (position != null) {

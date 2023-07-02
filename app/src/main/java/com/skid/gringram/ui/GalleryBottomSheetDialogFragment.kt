@@ -79,9 +79,12 @@ class GalleryBottomSheetDialogFragment(private val canAttach: Boolean) :
 
                             override fun getListOfSelected(): Map<Int, Uri> = selected.value
                         })
+
+                    val text = if (canAttach) binding.attachFileMessageEditText.text.toString() else null
                     fullScreenPhotoFragment.arguments = bundleOf(
                         "photoUri" to uri.toString(),
-                        "position" to position
+                        "position" to position,
+                        "text" to text
                     )
                     fullScreenPhotoFragment.show(
                         requireActivity().supportFragmentManager,
