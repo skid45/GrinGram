@@ -73,7 +73,7 @@ class EditProfileFragment : Fragment() {
                     GalleryBottomSheetDialogFragment(canAttach = false)
                 galleryBottomSheetDialogFragment.show(
                     requireActivity().supportFragmentManager,
-                    "GalleryBottomSheetDialogFragment"
+                    GalleryBottomSheetDialogFragment.TAG
                 )
             }
 

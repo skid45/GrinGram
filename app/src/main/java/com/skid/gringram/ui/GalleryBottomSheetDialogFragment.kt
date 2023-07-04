@@ -80,7 +80,8 @@ class GalleryBottomSheetDialogFragment(private val canAttach: Boolean) :
                             override fun getListOfSelected(): Map<Int, Uri> = selected.value
                         })
 
-                    val text = if (canAttach) binding.attachFileMessageEditText.text.toString() else null
+                    val text =
+                        if (canAttach) binding.attachFileMessageEditText.text.toString() else null
                     fullScreenPhotoFragment.arguments = bundleOf(
                         "photoUri" to uri.toString(),
                         "position" to position,
@@ -88,7 +89,7 @@ class GalleryBottomSheetDialogFragment(private val canAttach: Boolean) :
                     )
                     fullScreenPhotoFragment.show(
                         requireActivity().supportFragmentManager,
-                        "FullScreenPhotoFragment"
+                        FullScreenPhotoFragment.TAG
                     )
                 }
 
@@ -252,5 +253,10 @@ class GalleryBottomSheetDialogFragment(private val canAttach: Boolean) :
 
     private fun updateSelected(positions: Set<Int>) {
         galleryAdapter.updateSelected(positions)
+    }
+
+
+    companion object {
+        const val TAG = "GalleryBottomSheetDialogFragment"
     }
 }

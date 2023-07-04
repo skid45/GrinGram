@@ -63,7 +63,7 @@
     </style>
 
     <style name="FullscreenDialogStyle" parent="android:Theme.NoTitleBar.Fullscreen">
-        <item name="android:background">@color/colorBackground</item>
+        <item name="android:background">@color/black</item>
     </style>
 
 

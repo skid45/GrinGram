@@ -40,6 +40,14 @@ class ChatFragment : Fragment() {
             override fun deleteMessage(messageKey: String, deleteBoth: Boolean) {
                 userViewModel.deleteMessage(messageKey, deleteBoth, companionUser?.uid.toString())
             }
+
+            override fun onFullscreenChatMedia(media: List<String>, position: Int) {
+                val fullscreenChatMediaFragment = FullscreenChatMediaFragment(media, position)
+                fullscreenChatMediaFragment.show(
+                    requireActivity().supportFragmentManager,
+                    FullscreenChatMediaFragment.TAG
+                )
+            }
         })
     }
 
@@ -154,7 +162,7 @@ class ChatFragment : Fragment() {
                     GalleryBottomSheetDialogFragment(canAttach = true)
                 galleryBottomSheetDialogFragment.show(
                     requireActivity().supportFragmentManager,
-                    "GalleryBottomSheetDialogFragment"
+                    GalleryBottomSheetDialogFragment.TAG
                 )
             }
 

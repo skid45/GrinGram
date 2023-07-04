@@ -126,6 +126,10 @@ class FullScreenPhotoFragment(
             WindowManager.LayoutParams.MATCH_PARENT
         )
     }
+
+    companion object {
+        const val TAG = "FullScreenPhotoFragment"
+    }
 }
 
 interface FullscreenPhotoActionListener {

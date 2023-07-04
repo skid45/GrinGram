@@ -20,4 +20,5 @@
     <color name="colorOnSurface">#303030</color>
     <color name="colorBackground">#FFFFFF</color>
     <color name="colorError">#F61010</color>
+    <color name="colorPhotoToolbar">#25000000</color>
 </resources>

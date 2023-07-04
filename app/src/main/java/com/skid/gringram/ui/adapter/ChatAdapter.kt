@@ -40,7 +40,11 @@ class ChatAdapter(
     private var listPopupWindow: ListPopupWindow? = null
     private var listPopupWindowIsShowing: Boolean = false
 
-    class ViewHolder(val binding: MessageBinding, private val context: Context) :
+    class ViewHolder(
+        val binding: MessageBinding,
+        private val context: Context,
+        private val actionListener: ChatActionListener,
+    ) :
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(message: Message, currentUser: User?) = with(binding) {
@@ -82,7 +86,14 @@ class ChatAdapter(
                     messageMediaRow2.removeAllViews()
                     messageMediaRow3.removeAllViews()
 
-                    val adapter = MessageMediaAdapter(context, message.media)
+                    val adapter = MessageMediaAdapter(
+                        context = context,
+                        mediaUris = message.media,
+                        actionListener = object : MessageMediaActionListener {
+                            override fun onFullscreenChatMedia(media: List<String>, position: Int) {
+                                actionListener.onFullscreenChatMedia(media, position)
+                            }
+                        })
                     for (i in 0 until adapter.count) {
                         when {
                             i < 3 -> {
@@ -109,7 +120,7 @@ class ChatAdapter(
         val view = LayoutInflater.from(parent.context)
         val binding = MessageBinding.inflate(view, parent, false)
 
-        val holder = ViewHolder(binding, parent.context)
+        val holder = ViewHolder(binding, parent.context, actionListener)
         holder.binding.coreMessageLayout.setOnClickListener {
             if (listPopupWindowIsShowing) {
                 listPopupWindow?.dismiss()
@@ -212,4 +223,5 @@ class ChatAdapter(
 
 interface ChatActionListener {
     fun deleteMessage(messageKey: String, deleteBoth: Boolean)
+    fun onFullscreenChatMedia(media: List<String>, position: Int)
 }

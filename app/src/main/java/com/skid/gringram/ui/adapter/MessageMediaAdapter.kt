@@ -12,6 +12,7 @@ import com.squareup.picasso.Picasso
 class MessageMediaAdapter(
     private val context: Context,
     private val mediaUris: List<String>,
+    private val actionListener: MessageMediaActionListener,
 ) : BaseAdapter() {
 
     private class ViewHolder(val imageView: ImageView)
@@ -36,6 +37,15 @@ class MessageMediaAdapter(
         }
 
         Picasso.get().load(mediaUris[position]).into(viewHolder.imageView)
+
+        view.setOnClickListener {
+            actionListener.onFullscreenChatMedia(mediaUris, position)
+        }
+
         return view
     }
+}
+
+interface MessageMediaActionListener {
+    fun onFullscreenChatMedia(media: List<String>, position: Int)
 }
