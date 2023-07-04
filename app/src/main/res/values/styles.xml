@@ -66,7 +66,6 @@
         <item name="android:background">@color/black</item>
     </style>
 
-
     <style name="TextAppearance.MaterialComponents.Headline4.PrimaryColor">
         <item name="android:textColor">@color/colorPrimary</item>
         <item name="android:textStyle">bold</item>
