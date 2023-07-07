@@ -16,6 +16,23 @@
         <item name="android:textColor">@color/colorBackground</item>
     </style>
 
+    <style name="ButtonStyle.ChatDetailsButton">
+        <item name="android:backgroundTint">?attr/colorSurface</item>
+        <item name="android:textColor">?attr/colorPrimary</item>
+        <item name="android:textAppearance">@style/TextAppearance.MaterialComponents.Subtitle2
+        </item>
+        <item name="iconGravity">top</item>
+        <item name="iconTint">?attr/colorPrimary</item>
+    </style>
+
+    <style name="ButtonStyle.ChatDetailsButton.RedContent">
+        <item name="android:textColor">@color/colorError</item>
+        <item name="android:textAppearance">@style/TextAppearance.MaterialComponents.Subtitle2
+        </item>
+        <item name="iconGravity">top</item>
+        <item name="iconTint">@color/colorError</item>
+    </style>
+
     <style name="ButtonStyle.SendMessageButton">
         <item name="cornerRadius">20dp</item>
     </style>

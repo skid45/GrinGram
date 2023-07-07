@@ -82,7 +82,7 @@ class ContactListFragment : Fragment() {
 
     private fun setListeners() {
         binding.apply {
-            searchViewEditText.setOnFocusChangeListener { view, hasFocus ->
+            searchViewEditText.setOnFocusChangeListener { _, hasFocus ->
                 TransitionManager.beginDelayedTransition(
                     contactListCoordinatorLayout,
                     AutoTransition().apply {

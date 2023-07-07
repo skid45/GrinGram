@@ -68,13 +68,15 @@ class GalleryAdapter(
                 actionListener.onFullScreenPhoto(it.tag as Uri, position)
             }
 
-            galleryItemSelectImageTextView.setOnClickListener {
-                val position = holder.adapterPosition
-                if (!actionListener.getListOfSelected().containsKey(position)) {
-                    actionListener.addSelectedItem(galleryItemImageView.tag as Uri, position)
-                } else {
-                    actionListener.removeSelectedItem(position)
-                    notifyItemChanged(position)
+            if (canAttach) {
+                galleryItemSelectImageTextView.setOnClickListener {
+                    val position = holder.adapterPosition
+                    if (!actionListener.getListOfSelected().containsKey(position)) {
+                        actionListener.addSelectedItem(galleryItemImageView.tag as Uri, position)
+                    } else {
+                        actionListener.removeSelectedItem(position)
+                        notifyItemChanged(position)
+                    }
                 }
             }
         }

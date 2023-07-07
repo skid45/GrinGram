@@ -124,6 +124,13 @@
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right" />
+        <action
+            android:id="@+id/action_chatFragment_to_chatDetailsFragment"
+            app:destination="@id/chatDetailsFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
     <fragment
         android:id="@+id/editProfileFragment"
@@ -138,10 +145,15 @@
         android:id="@+id/searchChatsFragment"
         android:name="com.skid.gringram.ui.SearchChatsFragment"
         android:label="search_chats"
-        tools:layout="@layout/search_chats" >
+        tools:layout="@layout/search_chats">
         <action
             android:id="@+id/action_searchChatsFragment_to_chatFragment"
             app:destination="@id/chatFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/chatDetailsFragment"
+        android:name="com.skid.gringram.ui.ChatDetailsFragment"
+        android:label="chat_details"
+        tools:layout="@layout/chat_details" />
 
 </navigation>
